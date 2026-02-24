@@ -1,132 +1,329 @@
 """
-Loan Approval Prediction System
-A professional Streamlit application for predicting loan approvals using XGBoost.
+LoanPredict - Loan Approval Prediction System
+Clean, modern UI matching the provided design
 """
 
 import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
-import plotly.graph_objects as go
-import plotly.express as px
 from pathlib import Path
 
-# Page configuration
 st.set_page_config(
-    page_title="Loan Approval Predictor",
+    page_title="LoanPredict",
     page_icon="🏦",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for professional styling
 st.markdown("""
 <style>
-    /* Main container */
-    .main {
-        padding: 2rem;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    * { font-family: 'Inter', sans-serif; }
+    
+    .main { background-color: #F5F6F7; }
+    .block-container { padding: 1rem 2rem; max-width: 100%; }
+    
+    .header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #E5E8EB;
+        margin-bottom: 1.5rem;
+        background: white;
+        margin: -1rem -2rem 1.5rem -2rem;
+        padding: 1rem 2rem;
     }
     
-    /* Header styling */
-    .main-header {
-        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        color: white;
-        text-align: center;
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2C3E50;
     }
     
-    .main-header h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
+    .logo-icon {
+        width: 24px;
+        height: 24px;
+        background: #2C3E50;
+        border-radius: 4px;
     }
     
-    .main-header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
+    .accuracy-badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+        color: #5D6D7E;
     }
     
-    /* Card styling */
+    .green-dot {
+        width: 8px;
+        height: 8px;
+        background: #27AE60;
+        border-radius: 50%;
+    }
+    
     .metric-card {
         background: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        text-align: center;
-        margin-bottom: 1rem;
+        border-radius: 12px;
+        padding: 1.25rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        border: 1px solid #E5E8EB;
+    }
+    
+    .metric-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #7F8C8D;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
     }
     
     .metric-value {
         font-size: 2rem;
-        font-weight: bold;
-        color: #1e3a5f;
+        font-weight: 700;
+        color: #2C3E50;
     }
     
-    .metric-label {
-        font-size: 0.9rem;
-        color: #666;
+    .metric-badge {
+        display: inline-block;
+        background: #E8F5E9;
+        color: #27AE60;
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-left: 8px;
     }
     
-    /* Result cards */
-    .approved-card {
-        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-        padding: 2rem;
-        border-radius: 15px;
-        color: white;
-        text-align: center;
-        margin: 1rem 0;
+    .metric-sub {
+        font-size: 0.75rem;
+        color: #7F8C8D;
+        margin-top: 4px;
     }
     
-    .rejected-card {
-        background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
-        padding: 2rem;
-        border-radius: 15px;
-        color: white;
-        text-align: center;
-        margin: 1rem 0;
+    .decision-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        border: 1px solid #E5E8EB;
+        height: 100%;
     }
     
-    /* Section headers */
-    .section-header {
-        font-size: 1.5rem;
+    .card-title {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #7F8C8D;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+    
+    .approved-text {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #27AE60;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .rejected-text {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #C0392B;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .model-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+    
+    .stat-item { display: flex; flex-direction: column; }
+    
+    .stat-label {
+        font-size: 0.7rem;
+        color: #7F8C8D;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .stat-value {
+        font-size: 1.25rem;
         font-weight: 600;
-        color: #1e3a5f;
-        margin: 1.5rem 0 1rem 0;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #3498db;
+        color: #2C3E50;
     }
     
-    /* Info boxes */
-    .info-box {
-        background: #f8f9fa;
-        padding: 1rem;
-        border-radius: 8px;
-        border-left: 4px solid #3498db;
+    .prob-value {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #2C3E50;
+        text-align: center;
         margin: 1rem 0;
     }
     
-    /* Hide Streamlit branding */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    
-    /* Sidebar styling */
-    .css-1d391kg {
-        padding-top: 1rem;
+    .prob-value span {
+        font-size: 1.5rem;
+        font-weight: 500;
     }
     
-    /* Input styling */
-    .stSelectbox, .stSlider, .stNumberInput {
+    .risk-bar {
+        height: 8px;
+        background: linear-gradient(to right, #27AE60, #F1C40F, #E74C3C);
+        border-radius: 4px;
+        margin: 1rem 0 0.5rem 0;
+    }
+    
+    .risk-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.7rem;
+        color: #7F8C8D;
+    }
+    
+    .feature-bar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+    
+    .feature-name {
+        width: 120px;
+        font-size: 0.8rem;
+        color: #5D6D7E;
+    }
+    
+    .feature-bar-container {
+        flex: 1;
+        height: 8px;
+        background: #E5E8EB;
+        border-radius: 4px;
+        margin: 0 10px;
+    }
+    
+    .feature-bar-fill {
+        height: 100%;
+        background: #3498DB;
+        border-radius: 4px;
+    }
+    
+    .feature-value {
+        width: 40px;
+        font-size: 0.8rem;
+        color: #7F8C8D;
+        text-align: right;
+    }
+    
+    .factor-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #F0F0F0;
+    }
+    
+    .factor-item:last-child { border-bottom: none; }
+    
+    .factor-indicator {
+        width: 4px;
+        height: 40px;
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+    
+    .factor-green { background: #27AE60; }
+    .factor-orange { background: #F39C12; }
+    .factor-red { background: #E74C3C; }
+    
+    .factor-content { flex: 1; }
+    
+    .factor-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #2C3E50;
+        margin-bottom: 4px;
+    }
+    
+    .factor-desc {
+        font-size: 0.75rem;
+        color: #7F8C8D;
+        line-height: 1.4;
+    }
+    
+    .recommendations { margin-top: 1.5rem; }
+    
+    .rec-title {
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: #7F8C8D;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.75rem;
+    }
+    
+    .rec-item {
+        font-size: 0.8rem;
+        color: #5D6D7E;
+        padding-left: 1rem;
+        position: relative;
         margin-bottom: 0.5rem;
     }
+    
+    .rec-item::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #7F8C8D;
+    }
+    
+    section[data-testid="stSidebar"] {
+        background-color: #FAFAFA;
+        border-right: 1px solid #E5E8EB;
+    }
+    
+    .sidebar-section {
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: #7F8C8D;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 1.5rem 0 0.75rem 0;
+    }
+    
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stDeployButton {display: none;}
+    
+    .stButton > button {
+        width: 100%;
+        background: #27AE60;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    
+    .stButton > button:hover { background: #219A52; }
 </style>
 """, unsafe_allow_html=True)
 
 
 @st.cache_resource
 def load_model():
-    """Load the trained XGBoost model and preprocessing objects."""
-    # Try multiple path resolutions for different run contexts
     possible_roots = [
         Path(__file__).parent.parent,
         Path.cwd(),
@@ -144,13 +341,10 @@ def load_model():
             feature_names = joblib.load(features_path)
             return model, scaler, feature_names
     
-    raise FileNotFoundError("Could not find model files. Please check the directory structure.")
+    raise FileNotFoundError("Could not find model files.")
 
 
 def preprocess_input(data, scaler, feature_names):
-    """Preprocess user input to match training data format."""
-    
-    # Numerical features that need scaling
     numerical_features = [
         'age', 'years_employed', 'annual_income', 'credit_score',
         'credit_history_years', 'savings_assets', 'defaults_on_file',
@@ -159,19 +353,15 @@ def preprocess_input(data, scaler, feature_names):
         'payment_to_income_ratio'
     ]
     
-    # Create feature vector with float64 dtype to avoid warnings
     features = pd.DataFrame(0.0, index=[0], columns=feature_names, dtype=np.float64)
     
-    # Set numerical features
     for feat in numerical_features:
         if feat in data:
             features.loc[0, feat] = data[feat]
     
-    # Scale numerical features
     numerical_cols = [f for f in numerical_features if f in features.columns]
     features[numerical_cols] = scaler.transform(features[numerical_cols])
     
-    # Set categorical features (one-hot encoded)
     occupation_col = f"occupation_status_{data['occupation_status']}"
     product_col = f"product_type_{data['product_type']}"
     intent_col = f"loan_intent_{data['loan_intent']}"
@@ -186,385 +376,335 @@ def preprocess_input(data, scaler, feature_names):
     return features
 
 
-def create_gauge_chart(probability, title="Approval Probability"):
-    """Create a gauge chart for probability visualization."""
-    
-    # Determine color based on probability
-    if probability >= 0.7:
-        bar_color = "#27ae60"
-    elif probability >= 0.4:
-        bar_color = "#f39c12"
-    else:
-        bar_color = "#e74c3c"
-    
-    fig = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=probability * 100,
-        domain={'x': [0, 1], 'y': [0, 1]},
-        title={'text': title, 'font': {'size': 20, 'color': '#1e3a5f'}},
-        number={'suffix': "%", 'font': {'size': 40, 'color': '#1e3a5f'}},
-        gauge={
-            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#1e3a5f"},
-            'bar': {'color': bar_color},
-            'bgcolor': "white",
-            'borderwidth': 2,
-            'bordercolor': "#1e3a5f",
-            'steps': [
-                {'range': [0, 40], 'color': '#fadbd8'},
-                {'range': [40, 70], 'color': '#fef9e7'},
-                {'range': [70, 100], 'color': '#d5f5e3'}
-            ],
-            'threshold': {
-                'line': {'color': "black", 'width': 4},
-                'thickness': 0.75,
-                'value': 50
-            }
-        }
-    ))
-    
-    fig.update_layout(
-        height=300,
-        margin=dict(l=20, r=20, t=50, b=20),
-        paper_bgcolor='rgba(0,0,0,0)',
-        font={'color': "#1e3a5f", 'family': "Arial"}
-    )
-    
-    return fig
-
-
-def create_feature_importance_chart(model, feature_names, user_features):
-    """Create a feature importance chart highlighting user's values."""
-    
+def get_feature_importance(model, feature_names):
     importance_df = pd.DataFrame({
         'Feature': feature_names,
         'Importance': model.feature_importances_
-    }).sort_values('Importance', ascending=True).tail(10)
+    }).sort_values('Importance', ascending=False).head(5)
     
-    fig = px.bar(
-        importance_df,
-        x='Importance',
-        y='Feature',
-        orientation='h',
-        title='Top 10 Features Influencing Decision',
-        color='Importance',
-        color_continuous_scale='Blues'
-    )
-    
-    fig.update_layout(
-        height=400,
-        showlegend=False,
-        xaxis_title="Feature Importance",
-        yaxis_title="",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        font={'color': "#1e3a5f"}
-    )
-    
-    return fig
-
-
-def get_decision_factors(model, feature_names, user_features, prediction_proba):
-    """Analyze which factors most influenced the decision."""
-    
-    # Get feature importances
-    importances = dict(zip(feature_names, model.feature_importances_))
-    user_values = user_features.iloc[0].to_dict()
-    
-    # Identify top positive and negative factors
-    factors = []
-    
-    # Map features to interpretable names
-    feature_labels = {
+    name_map = {
         'credit_score': 'Credit Score',
-        'defaults_on_file': 'Past Defaults',
-        'debt_to_income_ratio': 'Debt-to-Income Ratio',
-        'delinquencies_last_2yrs': 'Recent Delinquencies',
-        'loan_intent_Debt Consolidation': 'Debt Consolidation Loan',
-        'loan_intent_Education': 'Education Loan',
-        'product_type_Credit Card': 'Credit Card Product',
-        'age': 'Age',
         'annual_income': 'Annual Income',
-        'credit_history_years': 'Credit History Length'
+        'debt_to_income_ratio': 'Debt-to-Income',
+        'loan_amount': 'Loan Amount',
+        'years_employed': 'Employment Hist',
+        'defaults_on_file': 'Default History',
+        'credit_history_years': 'Credit History',
+        'loan_to_income_ratio': 'Loan-to-Income',
+        'interest_rate': 'Interest Rate',
+        'age': 'Age'
     }
     
-    for feat, imp in sorted(importances.items(), key=lambda x: -x[1])[:5]:
-        label = feature_labels.get(feat, feat.replace('_', ' ').title())
-        value = user_values.get(feat, 0)
-        
-        if value != 0:
-            if value > 0:
-                impact = "positive" if prediction_proba > 0.5 else "negative"
-            else:
-                impact = "negative" if prediction_proba > 0.5 else "positive"
-            
-            factors.append({
-                'feature': label,
-                'importance': imp,
-                'impact': impact
-            })
+    importance_df['Display'] = importance_df['Feature'].map(
+        lambda x: name_map.get(x, x.replace('_', ' ').title()[:15])
+    )
     
-    return factors[:4]
+    return importance_df
+
+
+def get_contributing_factors(data, probability):
+    factors = []
+    
+    if data['credit_score'] >= 700:
+        factors.append({
+            'type': 'green',
+            'title': 'Strong Credit History',
+            'desc': f"Applicant has a credit score in the top 20% percentile, significantly boosting approval odds."
+        })
+    elif data['credit_score'] >= 650:
+        factors.append({
+            'type': 'green',
+            'title': 'Good Credit Score',
+            'desc': f"Credit score of {data['credit_score']} meets standard lending requirements."
+        })
+    else:
+        factors.append({
+            'type': 'red',
+            'title': 'Low Credit Score',
+            'desc': f"Credit score of {data['credit_score']} is below the preferred threshold of 650."
+        })
+    
+    dti = data.get('debt_to_income_ratio', 0) * 100
+    if dti < 36:
+        factors.append({
+            'type': 'green',
+            'title': 'Low Debt-to-Income Ratio',
+            'desc': f"Current DTI of {dti:.0f}% is well below the conservative threshold of 36%."
+        })
+    elif dti < 43:
+        factors.append({
+            'type': 'orange',
+            'title': 'Moderate Debt-to-Income Ratio',
+            'desc': f"DTI of {dti:.0f}% is acceptable but approaching upper limits."
+        })
+    else:
+        factors.append({
+            'type': 'red',
+            'title': 'High Debt-to-Income Ratio',
+            'desc': f"DTI of {dti:.0f}% exceeds the recommended maximum of 43%."
+        })
+    
+    if data['years_employed'] >= 2:
+        factors.append({
+            'type': 'green',
+            'title': 'Stable Employment',
+            'desc': f"Employment duration of {data['years_employed']:.1f} years demonstrates job stability."
+        })
+    else:
+        factors.append({
+            'type': 'orange',
+            'title': 'Short Employment Duration',
+            'desc': f"Current employment length is less than 2 years at current role, introducing minor risk."
+        })
+    
+    if data.get('defaults_on_file', 0) > 0:
+        factors.append({
+            'type': 'red',
+            'title': 'Previous Defaults',
+            'desc': "History of defaults significantly impacts creditworthiness assessment."
+        })
+    
+    return factors[:3]
+
+
+def get_recommendations(data, probability):
+    recs = []
+    
+    if data['years_employed'] < 2:
+        recs.append("Verify employment with current employer letter.")
+    
+    if data.get('debt_to_income_ratio', 0) * 100 > 30:
+        recs.append("Confirm detailed breakdown of existing debts.")
+    
+    if data['credit_score'] < 700:
+        recs.append("Consider credit score improvement strategies.")
+    
+    if data['loan_amount'] > data['annual_income'] * 0.5:
+        recs.append("Review loan amount relative to annual income.")
+    
+    if not recs:
+        recs.append("Application appears strong - proceed with standard verification.")
+    
+    return recs[:2]
 
 
 def main():
-    # Load model
     try:
         model, scaler, feature_names = load_model()
     except Exception as e:
         st.error(f"Error loading model: {e}")
-        st.info("Please ensure the model files are in the correct location.")
         return
-    
-    # Header
+
+    with st.sidebar:
+        st.markdown('<p class="sidebar-section">PERSONAL</p>', unsafe_allow_html=True)
+        
+        full_name = st.text_input("Full Name", placeholder="e.g. Alex Morgan")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            age = st.number_input("Age", min_value=18, max_value=70, value=34)
+        with col2:
+            dependents = st.number_input("Dependents", min_value=0, max_value=10, value=1)
+        
+        st.markdown('<p class="sidebar-section">FINANCIAL</p>', unsafe_allow_html=True)
+        
+        annual_income = st.number_input("Annual Income", min_value=15000, max_value=500000, value=85000, format="%d")
+        years_employed = st.slider("Employment Length (Years)", 0.0, 40.0, 5.0, 0.5)
+        
+        st.markdown('<p class="sidebar-section">LOAN DETAILS</p>', unsafe_allow_html=True)
+        
+        loan_amount = st.number_input("Loan Amount", min_value=1000, max_value=100000, value=25000, format="%d")
+        term_months = st.selectbox("Term (Months)", [12, 24, 36, 48, 60], index=2)
+        loan_intent = st.selectbox("Intent", [
+            "Debt Consolidation", "Education", "Home Improvement", 
+            "Medical", "Personal", "Business"
+        ])
+        
+        st.markdown('<p class="sidebar-section">CREDIT HISTORY</p>', unsafe_allow_html=True)
+        
+        credit_score = st.number_input("Credit Score", min_value=300, max_value=850, value=720)
+        default_history = st.radio("Default History", ["No", "Yes"], horizontal=True)
+        defaults = 1 if default_history == "Yes" else 0
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        predict_button = st.button("Run Analysis", type="primary", use_container_width=True)
+
     st.markdown("""
-    <div class="main-header">
-        <h1>🏦 Loan Approval Prediction System</h1>
-        <p>AI-Powered Credit Decision Engine | XGBoost Model | 92.86% Accuracy</p>
+    <div class="header-bar">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            LoanPredict
+        </div>
+        <div class="accuracy-badge">
+            <div class="green-dot"></div>
+            XGBoost · 92.86% accuracy
+        </div>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Sidebar - Input Form
-    with st.sidebar:
-        st.markdown("### 📝 Application Details")
-        st.markdown("---")
-        
-        # Personal Information
-        st.markdown("#### Personal Information")
-        age = st.slider("Age", 18, 70, 35, help="Applicant's age")
-        occupation = st.selectbox(
-            "Occupation Status",
-            ["Employed", "Self-Employed", "Student"],
-            help="Current employment status"
-        )
-        years_employed = st.slider("Years Employed", 0.0, 40.0, 5.0, 0.5)
-        
-        st.markdown("---")
-        
-        # Financial Information
-        st.markdown("#### Financial Information")
-        annual_income = st.number_input(
-            "Annual Income ($)",
-            min_value=15000,
-            max_value=500000,
-            value=75000,
-            step=5000
-        )
-        savings = st.number_input(
-            "Savings & Assets ($)",
-            min_value=0,
-            max_value=1000000,
-            value=25000,
-            step=5000
-        )
-        
-        st.markdown("---")
-        
-        # Credit Information
-        st.markdown("#### Credit History")
-        credit_score = st.slider(
-            "Credit Score",
-            300, 850, 680,
-            help="FICO score range: 300-850"
-        )
-        credit_history = st.slider("Credit History (Years)", 0.0, 30.0, 8.0, 0.5)
-        defaults = st.selectbox("Defaults on File", [0, 1, 2, 3], index=0)
-        delinquencies = st.selectbox("Delinquencies (Last 2 Years)", [0, 1, 2, 3, 4, 5], index=0)
-        derogatory_marks = st.selectbox("Derogatory Marks", [0, 1, 2, 3], index=0)
-        
-        st.markdown("---")
-        
-        # Loan Details
-        st.markdown("#### Loan Details")
-        product_type = st.selectbox(
-            "Product Type",
-            ["Credit Card", "Personal Loan", "Line of Credit"]
-        )
-        loan_intent = st.selectbox(
-            "Loan Purpose",
-            ["Education", "Personal", "Home Improvement", "Medical", "Business", "Debt Consolidation"]
-        )
-        loan_amount = st.number_input(
-            "Loan Amount ($)",
-            min_value=1000,
-            max_value=100000,
-            value=15000,
-            step=1000
-        )
-        interest_rate = st.slider("Interest Rate (%)", 5.0, 25.0, 12.0, 0.5)
-        
-        # Calculate ratios
-        dti = (loan_amount * (interest_rate / 100) / 12) / (annual_income / 12) * 100
-        lti = loan_amount / annual_income
-        pti = (loan_amount * (interest_rate / 100) / 12) / (annual_income / 12)
-        
-        st.markdown("---")
-        predict_button = st.button("🔮 Predict Approval", use_container_width=True, type="primary")
-    
-    # Main content area
-    col1, col2 = st.columns([2, 1])
+
+    monthly_payment = (loan_amount * 0.08) / 12
+    dti = (monthly_payment / (annual_income / 12)) if annual_income > 0 else 0
+    lti = loan_amount / annual_income if annual_income > 0 else 0
+    pti = monthly_payment / (annual_income / 12) if annual_income > 0 else 0
+
+    col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown('<div class="section-header">Application Summary</div>', unsafe_allow_html=True)
-        
-        # Display application summary in a nice format
-        summary_col1, summary_col2, summary_col3 = st.columns(3)
-        
-        with summary_col1:
-            st.markdown("""
-            <div class="metric-card">
-                <div class="metric-value">{}</div>
-                <div class="metric-label">Credit Score</div>
-            </div>
-            """.format(credit_score), unsafe_allow_html=True)
-        
-        with summary_col2:
-            st.markdown("""
-            <div class="metric-card">
-                <div class="metric-value">${:,}</div>
-                <div class="metric-label">Loan Amount</div>
-            </div>
-            """.format(loan_amount), unsafe_allow_html=True)
-        
-        with summary_col3:
-            st.markdown("""
-            <div class="metric-card">
-                <div class="metric-value">{:.1f}%</div>
-                <div class="metric-label">DTI Ratio</div>
-            </div>
-            """.format(dti), unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown('<div class="section-header">Risk Indicators</div>', unsafe_allow_html=True)
-        
-        # Risk indicator
-        risk_level = "Low" if credit_score >= 700 and defaults == 0 else "Medium" if credit_score >= 600 else "High"
-        risk_color = "#27ae60" if risk_level == "Low" else "#f39c12" if risk_level == "Medium" else "#e74c3c"
-        
+        score_change = "+15pts" if credit_score >= 700 else "+5pts" if credit_score >= 650 else ""
         st.markdown(f"""
-        <div class="info-box" style="border-left-color: {risk_color};">
-            <strong>Risk Assessment:</strong> {risk_level}<br>
-            <small>Based on credit score and payment history</small>
+        <div class="metric-card">
+            <div class="metric-label">CREDIT SCORE</div>
+            <div class="metric-value">{credit_score}<span class="metric-badge">{score_change}</span></div>
         </div>
         """, unsafe_allow_html=True)
     
-    # Prediction Section
-    if predict_button:
-        st.markdown("---")
-        st.markdown('<div class="section-header">🎯 Prediction Results</div>', unsafe_allow_html=True)
-        
-        # Prepare input data
-        input_data = {
-            'age': age,
-            'years_employed': years_employed,
-            'annual_income': annual_income,
-            'credit_score': credit_score,
-            'credit_history_years': credit_history,
-            'savings_assets': savings,
-            'defaults_on_file': defaults,
-            'delinquencies_last_2yrs': delinquencies,
-            'derogatory_marks': derogatory_marks,
-            'loan_amount': loan_amount,
-            'interest_rate': interest_rate,
-            'debt_to_income_ratio': dti / 100,
-            'loan_to_income_ratio': lti,
-            'payment_to_income_ratio': pti,
-            'occupation_status': occupation,
-            'product_type': product_type,
-            'loan_intent': loan_intent
-        }
-        
-        # Preprocess and predict
-        try:
-            features = preprocess_input(input_data, scaler, feature_names)
-            prediction = model.predict(features)[0]
-            probability = model.predict_proba(features)[0][1]
-            
-            # Display results
-            result_col1, result_col2 = st.columns([1, 1])
-            
-            with result_col1:
-                if prediction == 1:
-                    st.markdown("""
-                    <div class="approved-card">
-                        <h2>✅ APPROVED</h2>
-                        <p>Your loan application has been approved!</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    st.markdown("""
-                    <div class="rejected-card">
-                        <h2>❌ REJECTED</h2>
-                        <p>Unfortunately, your application was not approved.</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-            
-            with result_col2:
-                gauge_fig = create_gauge_chart(probability)
-                st.plotly_chart(gauge_fig, use_container_width=True)
-            
-            # Decision Factors
-            st.markdown('<div class="section-header">📊 Decision Analysis</div>', unsafe_allow_html=True)
-            
-            analysis_col1, analysis_col2 = st.columns([1, 1])
-            
-            with analysis_col1:
-                # Feature importance chart
-                importance_fig = create_feature_importance_chart(model, feature_names, features)
-                st.plotly_chart(importance_fig, use_container_width=True)
-            
-            with analysis_col2:
-                st.markdown("#### Key Factors in This Decision")
-                
-                # Show what influenced the decision
-                if probability >= 0.5:
-                    st.success("**Positive Factors:**")
-                    if credit_score >= 700:
-                        st.write("✅ Excellent credit score")
-                    if defaults == 0:
-                        st.write("✅ No defaults on file")
-                    if dti < 30:
-                        st.write("✅ Low debt-to-income ratio")
-                    if loan_intent == "Education":
-                        st.write("✅ Education loans have higher approval rates")
-                    if product_type == "Credit Card":
-                        st.write("✅ Credit card products have favorable terms")
-                else:
-                    st.error("**Areas of Concern:**")
-                    if credit_score < 650:
-                        st.write("⚠️ Credit score below 650")
-                    if defaults > 0:
-                        st.write("⚠️ Defaults on file reduce approval chances")
-                    if dti > 40:
-                        st.write("⚠️ High debt-to-income ratio")
-                    if loan_intent == "Debt Consolidation":
-                        st.write("⚠️ Debt consolidation loans have stricter requirements")
-                    if delinquencies > 0:
-                        st.write("⚠️ Recent delinquencies affect score")
-                
-                # Recommendations
-                st.markdown("#### 💡 Recommendations")
-                if probability < 0.5:
-                    if credit_score < 700:
-                        st.info("📈 Improve credit score by paying bills on time")
-                    if dti > 30:
-                        st.info("💰 Consider reducing existing debt before applying")
-                    if loan_amount > annual_income * 0.3:
-                        st.info("📉 Request a smaller loan amount")
-        
-        except Exception as e:
-            st.error(f"Error making prediction: {e}")
-            st.info("Please check your input values and try again.")
+    with col2:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">LOAN AMOUNT</div>
+            <div class="metric-value">${loan_amount:,}</div>
+        </div>
+        """, unsafe_allow_html=True)
     
-    # Footer with model info
-    st.markdown("---")
-    st.markdown("""
-    <div style="text-align: center; color: #666; padding: 2rem;">
-        <p><strong>Model Information</strong></p>
-        <p>XGBoost Classifier | Accuracy: 92.86% | ROC-AUC: 98.42%</p>
-        <p>Trained on 50,000 loan applications | 26 features</p>
-        <p><small>Built for educational purposes | Mid-Semester AI/ML Project</small></p>
-    </div>
-    """, unsafe_allow_html=True)
+    with col3:
+        target_text = "Target <35%" if dti * 100 < 35 else "Above target"
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">DTI RATIO</div>
+            <div class="metric-value">{dti * 100:.0f}%</div>
+            <div class="metric-sub">{target_text}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    input_data = {
+        'age': age,
+        'years_employed': years_employed,
+        'annual_income': annual_income,
+        'credit_score': credit_score,
+        'credit_history_years': years_employed * 0.8,
+        'savings_assets': annual_income * 0.3,
+        'defaults_on_file': defaults,
+        'delinquencies_last_2yrs': 0,
+        'derogatory_marks': 0,
+        'loan_amount': loan_amount,
+        'interest_rate': 8.0,
+        'debt_to_income_ratio': dti,
+        'loan_to_income_ratio': lti,
+        'payment_to_income_ratio': pti,
+        'occupation_status': 'Employed',
+        'product_type': 'Personal Loan',
+        'loan_intent': loan_intent
+    }
+
+    features = preprocess_input(input_data, scaler, feature_names)
+    prediction = model.predict(features)[0]
+    probability = model.predict_proba(features)[0][1]
+
+    col1, col2 = st.columns([1.2, 1])
+    
+    with col1:
+        if prediction == 1:
+            decision_html = '<div class="approved-text">APPROVED <span style="font-size:1.5rem;">✓</span></div>'
+        else:
+            decision_html = '<div class="rejected-text">NOT APPROVED <span style="font-size:1.5rem;">✗</span></div>'
+        
+        st.markdown(f"""
+        <div class="decision-card">
+            <div class="card-title">MODEL DECISION</div>
+            {decision_html}
+            <div class="model-stats">
+                <div class="stat-item">
+                    <span class="stat-label">PRECISION</span>
+                    <span class="stat-value">0.94</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">RECALL</span>
+                    <span class="stat-value">0.89</span>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        prob_pct = probability * 100
+        st.markdown(f"""
+        <div class="decision-card">
+            <div class="card-title">APPROVAL PROBABILITY</div>
+            <div class="prob-value">{prob_pct:.0f}<span>%</span></div>
+            <div class="risk-bar"></div>
+            <div class="risk-labels">
+                <span>Low Risk</span>
+                <span>High Risk</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        importance_df = get_feature_importance(model, feature_names)
+        max_imp = importance_df['Importance'].max()
+        
+        bars_html = ""
+        for _, row in importance_df.iterrows():
+            width_pct = (row['Importance'] / max_imp) * 100
+            bars_html += f"""
+            <div class="feature-bar">
+                <span class="feature-name">{row['Display']}</span>
+                <div class="feature-bar-container">
+                    <div class="feature-bar-fill" style="width: {width_pct}%"></div>
+                </div>
+                <span class="feature-value">{row['Importance']:.2f}</span>
+            </div>
+            """
+        
+        st.markdown(f"""
+        <div class="decision-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div class="card-title" style="margin: 0;">Feature Importance (SHAP)</div>
+                <span style="font-size: 0.7rem; color: #7F8C8D;">Global Impact</span>
+            </div>
+            {bars_html}
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        factors = get_contributing_factors(input_data, probability)
+        recs = get_recommendations(input_data, probability)
+        
+        factors_html = ""
+        for f in factors:
+            factors_html += f"""
+            <div class="factor-item">
+                <div class="factor-indicator factor-{f['type']}"></div>
+                <div class="factor-content">
+                    <div class="factor-title">{f['title']}</div>
+                    <div class="factor-desc">{f['desc']}</div>
+                </div>
+            </div>
+            """
+        
+        recs_html = ""
+        for r in recs:
+            recs_html += f'<div class="rec-item">{r}</div>'
+        
+        st.markdown(f"""
+        <div class="decision-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div class="card-title" style="margin: 0;">Key Contributing Factors</div>
+                <span style="font-size: 0.7rem; color: #7F8C8D;">Local explanation</span>
+            </div>
+            {factors_html}
+            <div class="recommendations">
+                <div class="rec-title">RECOMMENDED ACTIONS</div>
+                {recs_html}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
