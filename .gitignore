@@ -96,11 +96,9 @@ dmypy.json
 Thumbs.db
 
 # Project specific
-*.pkl
 *.joblib
 *.h5
 *.keras
-models/*.pkl
 models/*.h5
 models/*.joblib
 
