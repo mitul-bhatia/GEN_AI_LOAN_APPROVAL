@@ -15,14 +15,15 @@
 5. [Model 1: Logistic Regression](#5-model-1-logistic-regression)
 6. [Error Analysis: Why 86%?](#6-error-analysis-why-86)
 7. [Model 2: XGBoost](#7-model-2-xgboost)
-8. [Summary & Next Steps](#8-summary--next-steps)
-9. [References](#9-references)
+8. [Streamlit Web Application](#8-streamlit-web-application)
+9. [Summary & Conclusions](#9-summary--conclusions)
+10. [References](#10-references)
 
 ---
 
 ## Abstract
 
-This report presents a comprehensive machine learning approach to predict loan approval decisions. Using a dataset of 50,000 loan applications with 20 features, we develop and evaluate multiple classification models. Our analysis begins with Logistic Regression as a principled baseline, achieving **86.42% accuracy** and **0.944 ROC-AUC**. The report documents our complete methodology including exploratory data analysis, feature engineering, model development with mathematical foundations, and thorough evaluation. Key findings reveal that product type and loan intent are stronger predictors than traditional credit metrics, with Credit Card products showing **33x higher approval odds** compared to baseline.
+This report presents a comprehensive machine learning approach to predict loan approval decisions. Using a dataset of 50,000 loan applications with 20 features, we develop and evaluate multiple classification models. Our analysis begins with Logistic Regression as a principled baseline, achieving **86.42% accuracy** and **0.944 ROC-AUC**. Error analysis revealed that **feature interactions** (credit score × DTI) explain 40% of classification errors, motivating the use of XGBoost. The final XGBoost model achieves **92.86% accuracy** and **0.984 ROC-AUC**, a **+7.45%** improvement by capturing non-linear interactions. The model is deployed as a production Streamlit application at https://genailoanapproval-mitul.streamlit.app/. Key findings reveal that product type and loan intent are stronger predictors than traditional credit metrics, with Credit Card products showing **33x higher approval odds** compared to baseline.
 
 ---
 
@@ -48,9 +49,9 @@ This project develops an **automated loan approval prediction system** using mac
 
 This project implements:
 - ✅ Exploratory Data Analysis (EDA) with comprehensive visualizations
-- ✅ Traditional ML models: Logistic Regression, Decision Trees, Random Forest, XGBoost
-- ⬜ Deep Learning model using Keras
-- ⬜ Streamlit web application for real-time predictions
+- ✅ Traditional ML models: Logistic Regression, XGBoost
+- ✅ Streamlit web application for real-time predictions
+- ✅ Deployed to Streamlit Cloud
 
 ---
 
@@ -661,43 +662,105 @@ XGBoost's gradient boosting specifically targets high-confidence errors:
 
 ---
 
-## 8. Summary & Next Steps
+## 8. Streamlit Web Application
 
-### 8.1 Work Completed
+### 8.1 Application Architecture
+
+The production application is built with **Streamlit** and follows a clean, minimal design:
+
+```
+app/
+└── app.py          # Main application (~145 lines)
+```
+
+**Key Components:**
+1. **Model Loading**: XGBoost model, scaler, and feature names loaded via `joblib`
+2. **Preprocessing Pipeline**: Identical to training pipeline (scaling + one-hot encoding)
+3. **Interactive UI**: Two-column layout with input form and prediction display
+4. **Visualization**: Real-time feature importance chart using Plotly
+
+### 8.2 User Interface
+
+The application provides:
+- **Input Panel**: Age, occupation, income, credit score, loan details
+- **Automated Calculations**: DTI, LTI, PTI ratios computed from inputs
+- **Prediction Result**: Approval/Rejection with confidence percentage
+- **Key Metrics Display**: Credit Score status, DTI health, LTI assessment
+- **Feature Importance**: Top 8 factors influencing the prediction
+
+### 8.3 Deployment
+
+**Platform**: Streamlit Cloud  
+**URL**: https://genailoanapproval-mitul.streamlit.app/  
+**Repository**: Connected to GitHub for CI/CD
+
+**Configuration** (`.streamlit/config.toml`):
+```toml
+[theme]
+primaryColor = "#FF4B4B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+```
+
+### 8.4 Code Reference
+
+Key preprocessing function from [app/app.py](../app/app.py#L21-L36):
+```python
+def preprocess(data, scaler, feature_names):
+    num_feats = ['age', 'years_employed', 'annual_income', ...]
+    df = pd.DataFrame(0.0, index=[0], columns=feature_names)
+    for f in num_feats:
+        df.loc[0, f] = data[f]
+    df[num_feats] = scaler.transform(df[num_feats])
+    # One-hot encode categoricals
+    for col in [f"occupation_status_{data['occupation']}", ...]:
+        if col in df.columns:
+            df.loc[0, col] = 1
+    return df
+```
+
+---
+
+## 9. Summary & Conclusions
+
+### 9.1 Work Completed
 
 | Task | Status | Details |
 |------|--------|---------|
 | Project Setup | ✅ | Folder structure, GitHub repo, dependencies |
 | Data Exploration | ✅ | 6 visualizations, correlation analysis |
 | Preprocessing | ✅ | Feature selection, encoding, scaling |
-| Logistic Regression | ✅ | Full implementation with math foundation |
+| Logistic Regression | ✅ | 86.42% accuracy, full math documentation |
 | Error Analysis | ✅ | Identified interactions, thresholds as root causes |
-| XGBoost | ✅ | Mathematical foundation documented |
+| XGBoost | ✅ | 92.86% accuracy, captures feature interactions |
+| Streamlit App | ✅ | Clean minimal UI with all parameters |
+| Deployment | ✅ | Live at genailoanapproval-mitul.streamlit.app |
 
-### 8.2 Model Performance Comparison
+### 9.2 Model Performance Comparison
 
 | Model | Accuracy | ROC-AUC | F1 Score | Key Strength |
 |-------|----------|---------|----------|--------------|
 | Logistic Regression | 86.42% | 94.39% | 87.79% | Interpretable |
 | **XGBoost** | **92.86%** | **98.42%** | **93.58%** | **Captures interactions** |
 
-### 8.3 Key Insights
+### 9.3 Key Insights
 
 1. **LR Baseline is Strong**: 86% accuracy proves linear relationships exist
 2. **Interactions Matter**: `credit_score × DTI` predicts 40% of errors
 3. **Threshold Effects**: Credit score thresholds around 580, 650
 4. **~10% Irreducible Error**: Data noise limits any model
 
-### 8.4 Remaining Work
+### 9.4 Completed Work
 
 1. ✅ XGBoost model completed (92.86% accuracy)
-2. ⬜ Build Streamlit web application
-3. ⬜ Deploy to Streamlit Cloud
+2. ✅ Streamlit web application built
+3. ✅ Deployed to Streamlit Cloud
 4. ⬜ Create 5-minute video presentation
 
 ---
 
-## 9. References
+## 10. References
 
 1. Scikit-learn Documentation: https://scikit-learn.org/
 2. TensorFlow/Keras Documentation: https://www.tensorflow.org/
