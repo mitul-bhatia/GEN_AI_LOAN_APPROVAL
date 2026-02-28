@@ -1,34 +1,39 @@
 # Loan Approval Prediction System
 
-A Machine Learning and Deep Learning-based system to predict loan approval status using traditional ML algorithms and neural networks.
+A Machine Learning system to predict loan approval status using Logistic Regression and XGBoost, with a production Streamlit web application.
 
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13+-orange)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red)
-![License](https://img.shields.io/badge/License-MIT-green)
+![Python](https://img.shields.io/badge/Python-3.13-blue)
+![XGBoost](https://img.shields.io/badge/XGBoost-3.2-orange)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.54-red)
+![Accuracy](https://img.shields.io/badge/Accuracy-92.86%25-brightgreen)
+
+## 🌐 Live Demo
+
+**[Try the App →](https://genailoanapproval-mitul.streamlit.app/)**
 
 ## Table of Contents
 - [Overview](#overview)
+- [Key Features](#key-features)
 - [Dataset](#dataset)
 - [Project Structure](#project-structure)
 - [Installation](#installation)
-- [Usage](#usage)
-- [Models](#models)
-- [Results](#results)
-- [Live Demo](#live-demo)
-- [Contributing](#contributing)
-- [License](#license)
+- [Models & Results](#models--results)
+- [Methodology](#methodology)
+- [Tech Stack](#tech-stack)
+- [Author](#author)
 
 ## Overview
 
-This project aims to predict whether a loan application will be approved or rejected based on various applicant features such as credit score, annual income, employment status, and more. The system implements multiple ML algorithms and a deep learning model to achieve optimal prediction accuracy.
+This project predicts whether a loan application will be approved or rejected based on applicant features such as credit score, annual income, employment status, and loan details.
+
+**Key Achievement:** Improved accuracy from **86.42%** (Logistic Regression) to **92.86%** (XGBoost) by discovering that `credit_score × DTI` interaction explains 40% of classification errors.
 
 ### Key Features
-- Exploratory Data Analysis (EDA) with comprehensive visualizations
-- Multiple ML models: Logistic Regression, Random Forest, XGBoost, SVM, KNN
-- Deep Learning model using TensorFlow/Keras
-- Interactive Streamlit web application for predictions
-- Deployed on Streamlit Cloud for easy access
+
+1. **Exploratory Data Analysis** - 6 comprehensive visualizations
+2. **Error Analysis Pipeline** - Diagnosed why LR was stuck at 86%
+3. **Feature Interaction Discovery** - Found `credit_score × DTI` correlation = 0.166
+4. **Production Deployment** - Real-time predictions on Streamlit Cloud
 
 ## Dataset
 
@@ -62,29 +67,24 @@ The dataset contains **50,000 loan applications** with **20 features**:
 ```
 loan-approval-prediction/
 ├── data/
-│   └── loan_approval_data.csv      # Dataset
+│   ├── raw/                        # Original dataset
+│   └── processed/                  # Preprocessed train/test splits
 ├── notebooks/
 │   ├── 01_EDA.ipynb                # Exploratory Data Analysis
-│   ├── 02_Preprocessing.ipynb      # Data Preprocessing
-│   ├── 03_ML_Models.ipynb          # Traditional ML Models
-│   └── 04_Deep_Learning.ipynb      # Neural Network Model
-├── src/
-│   ├── __init__.py
-│   ├── data_preprocessing.py       # Preprocessing utilities
-│   ├── feature_engineering.py      # Feature engineering
-│   ├── train_ml.py                 # ML training script
-│   ├── train_dl.py                 # DL training script
-│   └── utils.py                    # Utility functions
+│   ├── 02_ML_Models.ipynb          # Logistic Regression
+│   ├── 03_Error_Analysis.ipynb     # Why LR stuck at 86%?
+│   └── 04_XGBoost.ipynb            # XGBoost (92.86%)
 ├── models/
-│   ├── best_model.pkl              # Saved best model
-│   └── scaler.pkl                  # Saved preprocessor
+│   ├── logistic_regression.pkl     # Baseline model
+│   └── xgboost.pkl                 # Production model
 ├── app/
-│   └── streamlit_app.py            # Streamlit application
+│   └── app.py                      # Streamlit application
 ├── report/
-│   └── main.tex                    # LaTeX project report
-├── requirements.txt                # Python dependencies
-├── README.md                       # This file
-└── .gitignore                      # Git ignore file
+│   ├── PROJECT_REPORT.md           # Markdown report
+│   ├── main.tex                    # LaTeX report
+│   └── *.png                       # Visualizations
+├── requirements.txt
+└── README.md
 ```
 
 ## Installation
@@ -144,67 +144,51 @@ streamlit run app/streamlit_app.py
 
 The app will open at `http://localhost:8501`
 
-## Models
+## Models & Results
 
-### Traditional Machine Learning
-| Model | Description |
-|-------|-------------|
-| Logistic Regression | Baseline linear classifier |
-| Random Forest | Ensemble of decision trees |
-| XGBoost | Gradient boosting algorithm |
-| SVM | Support Vector Machine with RBF kernel |
-| KNN | K-Nearest Neighbors |
-
-### Deep Learning
-- **Architecture**: Fully Connected Neural Network
-- **Layers**: Input → Dense(128) → Dense(64) → Dense(32) → Output(1)
-- **Activation**: ReLU (hidden), Sigmoid (output)
-- **Optimizer**: Adam
-- **Loss**: Binary Cross-Entropy
-
-## Results
+### Model Comparison
 
 | Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
 |-------|----------|-----------|--------|----------|---------|
-| Logistic Regression | - | - | - | - | - |
-| Random Forest | - | - | - | - | - |
-| XGBoost | - | - | - | - | - |
-| Neural Network | - | - | - | - | - |
+| Logistic Regression | 86.42% | 86.91% | 88.68% | 87.79% | 94.39% |
+| **XGBoost** | **92.86%** | **92.65%** | **94.53%** | **93.58%** | **98.42%** |
 
-*Results will be updated after training*
+### Why XGBoost Won
 
-## Live Demo
+| LR Limitation | XGBoost Solution |
+|---------------|------------------|
+| Additive effects only | Trees capture interactions |
+| Smooth decision boundary | Step functions via splits |
+| Single classifier | Ensemble of 200 trees |
 
-🌐 **[Try the Live App](https://your-app.streamlit.app)**
+**Key Discovery:** The interaction `credit_score × DTI` predicts errors 5x better than either feature alone (r=0.166 vs r≈0.03).
+
+## Methodology
+
+1. **EDA**: Analyzed 50,000 samples, 20 features, identified credit_score (+0.50) as strongest predictor
+2. **Preprocessing**: StandardScaler + One-Hot Encoding → 26 features
+3. **Baseline (LR)**: 86.42% accuracy, identified 1,358 errors
+4. **Error Analysis**: Found 52% of errors are "confidently wrong" (prob > 0.7)
+5. **XGBoost**: Captured interactions, achieved 92.86% accuracy
+6. **Deployment**: Streamlit Cloud with real-time predictions
 
 ## Tech Stack
 
-- **Data Processing**: Pandas, NumPy
-- **Visualization**: Matplotlib, Seaborn, Plotly
-- **ML**: Scikit-learn, XGBoost, LightGBM
-- **Deep Learning**: TensorFlow/Keras
-- **Web App**: Streamlit
-- **Deployment**: Streamlit Cloud
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+| Layer | Technology |
+|-------|------------|
+| Language | Python 3.13 |
+| ML | scikit-learn 1.8, XGBoost 3.2 |
+| Visualization | Plotly, Seaborn, Matplotlib |
+| Web App | Streamlit 1.54 |
+| Deployment | Streamlit Cloud |
+| Version Control | Git + GitHub |
 
 ## Author
 
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-
-## Acknowledgments
-
-- Dataset source
-- Course instructors and TAs
-- Open-source community
+**Mitul Bhatia**
+- GitHub: [@mitul-bhatia](https://github.com/mitul-bhatia)
+- Repository: [GEN_AI_LOAN_APPROVAL](https://github.com/mitul-bhatia/GEN_AI_LOAN_APPROVAL)
 
 ---
-*This project is part of the Mid-Semester AI/ML Project evaluation.*
+
+*Mid-Semester AI/ML Capstone Project | Newton School of Technology | February 2026*

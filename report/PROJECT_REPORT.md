@@ -17,7 +17,8 @@
 7. [Model 2: XGBoost](#7-model-2-xgboost)
 8. [Streamlit Web Application](#8-streamlit-web-application)
 9. [Summary & Conclusions](#9-summary--conclusions)
-10. [References](#10-references)
+10. [Team Contribution](#10-team-contribution)
+11. [References](#11-references)
 
 ---
 
@@ -760,14 +761,34 @@ def preprocess(data, scaler, feature_names):
 
 ---
 
-## 10. References
+## 10. Team Contribution
 
-1. Scikit-learn Documentation: https://scikit-learn.org/
-2. TensorFlow/Keras Documentation: https://www.tensorflow.org/
-3. Basel Committee on Banking Supervision. (2004). International Convergence of Capital Measurement and Capital Standards.
-4. Hastie, T., Tibshirani, R., & Friedman, J. (2009). The Elements of Statistical Learning.
-5. Equal Credit Opportunity Act (ECOA) - Fair lending requirements
+| Task | Contributor | Percentage |
+|------|-------------|------------|
+| Data Collection & Preprocessing | Mitul Bhatia | 100% |
+| Exploratory Data Analysis | Mitul Bhatia | 100% |
+| Logistic Regression Implementation | Mitul Bhatia | 100% |
+| Error Analysis & Diagnosis | Mitul Bhatia | 100% |
+| XGBoost Implementation | Mitul Bhatia | 100% |
+| Streamlit Web Application | Mitul Bhatia | 100% |
+| Deployment to Cloud | Mitul Bhatia | 100% |
+| Report Writing | Mitul Bhatia | 100% |
+
+**Note:** This is an individual project submission.
 
 ---
 
-*Report generated as part of Mid-Semester AI/ML Project*
+## 11. References
+
+1. Scikit-learn Documentation: https://scikit-learn.org/
+2. XGBoost Documentation: https://xgboost.readthedocs.io/
+3. Chen, T., & Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. *KDD '16*.
+4. Basel Committee on Banking Supervision. (2004). International Convergence of Capital Measurement and Capital Standards.
+5. Hastie, T., Tibshirani, R., & Friedman, J. (2009). The Elements of Statistical Learning.
+6. Equal Credit Opportunity Act (ECOA) - Fair lending requirements
+7. Streamlit Documentation: https://docs.streamlit.io/
+
+---
+
+*Report generated as part of Mid-Semester AI/ML Capstone Project*  
+*Newton School of Technology | February 2026*
