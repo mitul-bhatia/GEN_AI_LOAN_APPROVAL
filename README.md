@@ -207,17 +207,6 @@ The app will open at `http://localhost:8501`
 
 ---
 
-### Evaluation Criteria
-
-| Phase | Weight | Criteria |
-|:---|:---|:---|
-| **Mid-Sem** | 25% | ML technique application, Feature Engineering, UI Usability, Evaluation Metrics |
-| **End-Sem** | 30% | Reasoning quality, RAG & State management, Output clarity, Deployment success |
-
-> ⚠️ **Note:** Localhost-only demonstrations are not accepted. This project is **publicly deployed** on Streamlit Cloud.
-
----
-
 ### Team
 
 | Member | Role | Contribution |
