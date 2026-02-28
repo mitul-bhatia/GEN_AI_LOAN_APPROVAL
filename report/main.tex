@@ -783,41 +783,24 @@ Net Improvement & +644 samples \\
 
 \subsection{System Architecture}
 
-Figure \ref{fig:architecture} shows the complete data flow from user input to prediction output.
+Figure \ref{fig:architecture} shows the complete end-to-end pipeline from data input to deployed prediction.
 
 \begin{figure}[H]
 \centering
-\fbox{\parbox{0.95\textwidth}{
-\begin{center}
-\textbf{SYSTEM ARCHITECTURE DIAGRAM}
-\end{center}
-
-\vspace{0.5cm}
-
-\begin{tabular}{c}
-\fbox{\textbf{User Input}} \\
-$\downarrow$ \\
-\textit{Age, Credit Score, Income, Loan Details} \\
-$\downarrow$ \\
-\fbox{\textbf{Streamlit Web Interface}} \\
-$\downarrow$ \\
-\fbox{\textbf{Preprocessing Module}} \\
-\textit{StandardScaler (14 numerical) + One-Hot Encoding (12 categorical)} \\
-$\downarrow$ \\
-\textit{26-dimensional feature vector} \\
-$\downarrow$ \\
-\fbox{\textbf{XGBoost Model}} \\
-\textit{models/xgboost.pkl (200 trees, depth=5)} \\
-$\downarrow$ \\
-\textit{Prediction + Probability} \\
-$\downarrow$ \\
-\fbox{\textbf{Result Display}} \\
-\textit{Approval/Rejection + Confidence \% + Feature Importance Chart} \\
-\end{tabular}
-}}
-\caption{System Architecture: Data Flow Pipeline}
+\includegraphics[width=\textwidth]{system_architecture.png}
+\caption{System Architecture: End-to-End Pipeline (Designed by Hardik)}
 \label{fig:architecture}
 \end{figure}
+
+The architecture consists of five main components:
+
+\begin{enumerate}
+    \item \textbf{Data Layer}: Raw loan data (50K $\times$ 20 features)
+    \item \textbf{Preprocessing Pipeline}: Feature selection (20 $\rightarrow$ 18), One-Hot Encoding (3 $\rightarrow$ 12), StandardScaler, Train/Test Split (80/20)
+    \item \textbf{Model Training}: Logistic Regression (86.4\%) $\rightarrow$ Error Analysis $\rightarrow$ XGBoost (92.9\%)
+    \item \textbf{Model Artifacts}: Saved \texttt{feature\_names.pkl}, \texttt{scaler.pkl}, \texttt{xgboost.pkl}
+    \item \textbf{Production App}: Streamlit Web App with GitHub CI/CD to Streamlit Cloud
+\end{enumerate}
 
 \subsection{Application Components}
 
