@@ -27,7 +27,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{Loan Approval Prediction}
-\lhead{Mid-Semester Project}
+\lhead{NST GenAI Capstone}
 \cfoot{\thepage}
 
 % Hyperref setup
@@ -36,6 +36,8 @@
     linkcolor=blue,
     filecolor=magenta,
     urlcolor=cyan,
+    pdftitle={Loan Approval Prediction System},
+    pdfauthor={Mitul Bhatia, Hardik, Vaibhav, Sarvjeet},
 }
 
 % Title formatting
@@ -55,27 +57,43 @@
 % Title Page
 \begin{titlepage}
     \centering
-    \vspace*{2cm}
+    \vspace*{1cm}
     
     {\Huge\bfseries Loan Approval Prediction System\par}
     \vspace{0.5cm}
-    {\Large Using Machine Learning and Deep Learning\par}
+    {\Large Using Machine Learning (Logistic Regression \& XGBoost)\par}
+    
+    \vspace{1.5cm}
+    
+    {\large\textbf{Intro to GenAI Capstone Project (Milestone 1)}\par}
+    \vspace{0.3cm}
+    {\large Newton School of Technology, Sonipat\par}
     
     \vspace{2cm}
     
-    {\large Mid-Semester AI/ML Project Report\par}
+    {\Large\bfseries Team Members\par}
+    \vspace{0.5cm}
+    \begin{tabular}{ll}
+        \textbf{Mitul Bhatia} & Team Lead, ML Development \\
+        \textbf{Hardik} & System Architecture \\
+        \textbf{Vaibhav} & Documentation \\
+        \textbf{Sarvjeet} & Presentation \& Video \\
+    \end{tabular}
     
-    \vspace{3cm}
+    \vspace{1.5cm}
     
-    {\Large\bfseries Author\par}
+    {\large\bfseries Project Links\par}
     \vspace{0.3cm}
-    {\large Mitul Bhatia\par}
+    \begin{tabular}{ll}
+        \textbf{GitHub:} & \url{https://github.com/mitul-bhatia/GEN_AI_LOAN_APPROVAL} \\
+        \textbf{Live Demo:} & \url{https://genailoanapproval-mitul.streamlit.app/} \\
+    \end{tabular}
     
-    \vspace{2cm}
+    \vspace{1cm}
     
-    {\large\bfseries GitHub Repository\par}
-    \vspace{0.3cm}
-    {\url{https://github.com/mitul-bhatia/GEN_AI_LOAN_APPROVAL}\par}
+    \fbox{\parbox{0.8\textwidth}{\centering
+        \textbf{Final Accuracy: 92.86\%} | \textbf{ROC-AUC: 98.42\%}
+    }}
     
     \vfill
     
@@ -113,10 +131,11 @@ Loan approval is a critical decision in financial institutions, balancing risk m
 
 This project implements:
 \begin{itemize}
-    \item Exploratory Data Analysis (EDA) with comprehensive visualizations
-    \item Traditional ML models: Logistic Regression, Decision Trees, Random Forest, XGBoost
-    \item Deep Learning model using Keras
-    \item Streamlit web application for real-time predictions
+    \item Exploratory Data Analysis (EDA) with 6 comprehensive visualizations
+    \item Baseline Model: Logistic Regression with full mathematical foundation (86.42\% accuracy)
+    \item Error Analysis: Diagnosing why the baseline model fails
+    \item Production Model: XGBoost with hyperparameter tuning (92.86\% accuracy)
+    \item Streamlit web application deployed on Streamlit Cloud
 \end{itemize}
 
 \newpage
@@ -762,7 +781,45 @@ Net Improvement & +644 samples \\
 % Section 8: Streamlit Application
 \section{Streamlit Web Application}
 
-\subsection{Application Architecture}
+\subsection{System Architecture}
+
+Figure \ref{fig:architecture} shows the complete data flow from user input to prediction output.
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.95\textwidth}{
+\begin{center}
+\textbf{SYSTEM ARCHITECTURE DIAGRAM}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{tabular}{c}
+\fbox{\textbf{User Input}} \\
+$\downarrow$ \\
+\textit{Age, Credit Score, Income, Loan Details} \\
+$\downarrow$ \\
+\fbox{\textbf{Streamlit Web Interface}} \\
+$\downarrow$ \\
+\fbox{\textbf{Preprocessing Module}} \\
+\textit{StandardScaler (14 numerical) + One-Hot Encoding (12 categorical)} \\
+$\downarrow$ \\
+\textit{26-dimensional feature vector} \\
+$\downarrow$ \\
+\fbox{\textbf{XGBoost Model}} \\
+\textit{models/xgboost.pkl (200 trees, depth=5)} \\
+$\downarrow$ \\
+\textit{Prediction + Probability} \\
+$\downarrow$ \\
+\fbox{\textbf{Result Display}} \\
+\textit{Approval/Rejection + Confidence \% + Feature Importance Chart} \\
+\end{tabular}
+}}
+\caption{System Architecture: Data Flow Pipeline}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Application Components}
 
 The production application is built with Streamlit and follows a clean, minimal design:
 
@@ -790,6 +847,27 @@ The production application is built with Streamlit and follows a clean, minimal 
     \item \textbf{URL}: \url{https://genailoanapproval-mitul.streamlit.app/}
     \item \textbf{Repository}: Connected to GitHub for CI/CD
 \end{itemize}
+
+\subsection{Technology Stack}
+
+\begin{table}[H]
+\centering
+\caption{Technology Stack Used}
+\begin{tabular}{lll}
+\toprule
+\textbf{Layer} & \textbf{Technology} & \textbf{Purpose} \\
+\midrule
+Language & Python 3.13 & Core development \\
+ML Framework & scikit-learn 1.8 & Preprocessing, Logistic Regression \\
+Boosting & XGBoost 3.2 & Production model \\
+Data Processing & Pandas, NumPy & Data manipulation \\
+Visualization & Plotly, Seaborn, Matplotlib & Charts and graphs \\
+Web Framework & Streamlit 1.54 & User interface \\
+Deployment & Streamlit Cloud & Hosting \\
+Version Control & Git + GitHub & Source control \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \newpage
 
@@ -834,14 +912,96 @@ Logistic Regression & 86.42\% & 94.39\% & 87.79\% & Interpretable \\
 
 \newpage
 
-% References
+% Section 10: Team Contribution
+\section{Team Contribution}
+
+\subsection{Contribution Matrix}
+
+\begin{table}[H]
+\centering
+\caption{Team Contribution Matrix}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Task} & \textbf{Mitul} & \textbf{Hardik} & \textbf{Vaibhav} & \textbf{Sarvjeet} \\
+ & \textit{(Lead)} & \textit{(Architecture)} & \textit{(Documentation)} & \textit{(Presentation)} \\
+\midrule
+Data Collection \& Preprocessing & $\bullet$ & $\circ$ & $\circ$ & \\
+Exploratory Data Analysis & $\bullet$ & $\circ$ & $\circ$ & \\
+Logistic Regression Implementation & $\bullet$ & $\circ$ & & \\
+Error Analysis \& Diagnosis & $\bullet$ & $\circ$ & & \\
+XGBoost Implementation & $\bullet$ & $\circ$ & & \\
+System Architecture Design & $\bullet$ & $\bullet$ & & \\
+Streamlit Web Application & $\bullet$ & $\bullet$ & & \\
+Cloud Deployment & $\bullet$ & $\circ$ & & \\
+Technical Documentation & $\bullet$ & & $\bullet$ & \\
+Report Writing (LaTeX) & $\circ$ & & $\bullet$ & \\
+Presentation Slides & $\circ$ & & $\circ$ & $\bullet$ \\
+Video Recording \& Editing & & & & $\bullet$ \\
+Code Review \& Quality & $\bullet$ & $\circ$ & & \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3cm}
+\textbf{Legend:} $\bullet$ = Primary Contributor, $\circ$ = Supporting Contributor
+\end{table}
+
+\subsection{Individual Contributions}
+
+\begin{description}
+    \item[Mitul Bhatia (Team Lead)] Led the entire ML pipeline development including data preprocessing, feature engineering, model implementation (both Logistic Regression and XGBoost), error analysis, hyperparameter tuning, and Streamlit application development. Coordinated team efforts and ensured code quality.
+    
+    \item[Hardik (System Architecture)] Designed the system architecture diagram, contributed to understanding the data flow pipeline, assisted with Streamlit UI design, and participated in model debugging sessions.
+    
+    \item[Vaibhav (Documentation)] Responsible for comprehensive technical documentation, LaTeX report formatting, ensuring all mathematical notations are correct, and maintaining project README and code comments.
+    
+    \item[Sarvjeet (Presentation \& Video)] Created the presentation slides, recorded and edited the project walkthrough video, and ensured visual consistency across all deliverables.
+\end{description}
+
+\subsection{Code Ownership Declaration}
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{
+\textbf{Declaration:} We hereby affirm that the core logic of this project is our own work and not a direct output of Generative AI. All team members can explain any function within the repository during the Viva Voce examination.
+
+\vspace{0.3cm}
+\textbf{Technical Sub-Features Implemented:}
+\begin{enumerate}
+    \item Custom data preprocessing pipeline with feature engineering
+    \item Error analysis system to diagnose model limitations
+    \item Real-time inference via Streamlit web application
+    \item Interactive feature importance visualization
+\end{enumerate}
+}}
+\end{center}
+
+\newpage
+
+% Section 11: References
 \section{References}
 
 \begin{enumerate}
-    \item Scikit-learn Documentation: \url{https://scikit-learn.org/}
-    \item TensorFlow/Keras Documentation: \url{https://www.tensorflow.org/}
-    \item Basel Committee on Banking Supervision. (2004). International Convergence of Capital Measurement and Capital Standards.
-    \item Hastie, T., Tibshirani, R., \& Friedman, J. (2009). The Elements of Statistical Learning.
+    \item Chen, T., \& Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, 785-794.
+    
+    \item Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825-2830.
+    
+    \item Basel Committee on Banking Supervision. (2004). \textit{International Convergence of Capital Measurement and Capital Standards: A Revised Framework}. Bank for International Settlements.
+    
+    \item Hastie, T., Tibshirani, R., \& Friedman, J. (2009). \textit{The Elements of Statistical Learning: Data Mining, Inference, and Prediction} (2nd ed.). Springer.
+    
+    \item Equal Credit Opportunity Act (ECOA), 15 U.S.C. § 1691 et seq. - Fair lending requirements for credit decisions.
+    
+    \item Streamlit Documentation. (2026). Retrieved from \url{https://docs.streamlit.io/}
+    
+    \item XGBoost Documentation. (2026). Retrieved from \url{https://xgboost.readthedocs.io/}
 \end{enumerate}
+
+\subsection{Dataset Source}
+
+\begin{itemize}
+    \item \textbf{Dataset Name:} Loan Approval Dataset 2025
+    \item \textbf{Size:} 50,000 loan applications $\times$ 20 features
+    \item \textbf{Format:} CSV
+    \item \textbf{License:} Educational use permitted
+\end{itemize}
 
 \end{document}
