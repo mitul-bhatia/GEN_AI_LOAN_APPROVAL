@@ -202,7 +202,7 @@ def main():
             st.divider()
             st.subheader("About")
             st.write("""
-            This model predicts loan approval based on applicant information including credit history, 
+            This model predicts loan approval based on applicant information including credit history,
             financial status, and loan details. Built with XGBoost trained on 50,000 loan applications.
             """)
 
