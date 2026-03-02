@@ -225,6 +225,7 @@ The app will open at `http://localhost:8501`
 | **Live Demo** | [https://mitul-bhatia-gen-ai-loan-approval-appapp-rtzjzl.streamlit.app/](https://mitul-bhatia-gen-ai-loan-approval-appapp-rtzjzl.streamlit.app/) |
 | **GitHub Repository** | [https://github.com/mitul-bhatia/GEN_AI_LOAN_APPROVAL](https://github.com/mitul-bhatia/GEN_AI_LOAN_APPROVAL) |
 | **Overleaf Report** | [https://www.overleaf.com/9578946939ssybpphmccjs#d6b01d](https://www.overleaf.com/9578946939ssybpphmccjs#d6b01d) |
+| **Video** | [https://drive.google.com/drive/folders/1rssYqeT01-XKuvAYE21OtGUzJ122Ak6O?usp=drive_link](https://drive.google.com/drive/folders/1rssYqeT01-XKuvAYE21OtGUzJ122Ak6O?usp=drive_link) |
 
 ---
 
