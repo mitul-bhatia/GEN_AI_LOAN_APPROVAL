@@ -1,0 +1,30 @@
+# Core
+streamlit>=1.32.0
+fastapi>=0.111.0
+uvicorn>=0.30.0
+langgraph>=0.1.0
+
+# Vector DB
+chromadb>=0.4.0
+
+# Document parsing
+pdfplumber
+python-docx
+
+# PDF reports
+fpdf2
+reportlab
+
+# HTTP + env
+httpx
+python-dotenv
+
+# Data / ML
+pydantic>=2.0
+scikit-learn
+joblib
+numpy
+pandas
+
+# LLM
+groq
