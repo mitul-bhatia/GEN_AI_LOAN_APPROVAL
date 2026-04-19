@@ -82,7 +82,7 @@ Report chain runs only when profile complete and report requested.
 
 ### 5.1 What It Does
 
-1. Generates ML risk score (`services/ml_adapter.py`)
+1. Generates Heuristic risk score (`services/risk_scorer.py`)
 2. Runs deterministic policy checks (`services/policy_engine.py`)
 3. Produces decision class and score
 
@@ -128,7 +128,7 @@ Report chain runs only when profile complete and report requested.
 | `groq_client.py` | Groq API wrapper with retries |
 | `guardrail.py` | Safety/domain checks and continuation logic |
 | `profile_parser.py` | Intake field extraction and questioning logic |
-| `ml_adapter.py` | Trained model loading + fallback heuristic score |
+| `risk_scorer.py` | Deterministic heuristic risk score fallback |
 | `policy_engine.py` | Rule-based underwriting checks and score bands |
 | `retriever.py` | Embedding-based retrieval from Chroma |
 | `report_generator.py` | English report generation |
@@ -146,7 +146,7 @@ Computed values:
 
 EMI uses standard amortization formula with configurable annual rate.
 
-## 10. ML Adapter Logic (`ml_adapter.py`)
+## 10. Risk Scorer Logic (`risk_scorer.py`)
 
 Runtime order:
 

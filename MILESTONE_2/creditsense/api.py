@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from dotenv import load_dotenv
 load_dotenv()  # MUST be before any import that reads env vars
@@ -42,18 +42,18 @@ app.add_middleware(
 
 class AgentTurnRequest(BaseModel):
     user_message: str = Field(min_length=1)
-    state: dict[str, Any] | None = None
+    state: Optional[dict[str, Any]] = None
 
 
 class SeedParametersRequest(BaseModel):
     parameters: dict[str, Any]
-    state: dict[str, Any] | None = None
+    state: Optional[dict[str, Any]] = None
 
 
 class IngestRequest(BaseModel):
-    source_dir: str | None = None
-    chroma_path: str | None = None
-    collection: str | None = None
+    source_dir: Optional[str] = None
+    chroma_path: Optional[str] = None
+    collection: Optional[str] = None
     chunk_size: int = 1200
     overlap: int = 150
     embedding_model: str = "all-MiniLM-L6-v2"

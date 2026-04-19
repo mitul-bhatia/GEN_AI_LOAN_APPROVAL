@@ -35,7 +35,7 @@ Build a conversational credit assessment assistant that can:
 | Safety/domain guardrails | Complete | `services/guardrail.py` |
 | Form-based parameter seeding | Complete | `api.py`, `app.py` |
 | Financial ratio computation | Complete | `services/borrower_metrics.py` |
-| ML risk signal integration | Complete | `services/ml_adapter.py` |
+| Risk signal heuristic fallback | Complete | `services/risk_scorer.py` |
 | Deterministic underwriting checks | Complete | `services/policy_engine.py` |
 | RAG retrieval from local corpus | Complete | `scripts/ingest.py`, `services/retriever.py` |
 | English report generation | Complete | `services/report_generator.py` |

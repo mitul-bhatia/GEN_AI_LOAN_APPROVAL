@@ -60,7 +60,7 @@ creditsense/
 | `services/groq_pool.py` | 47 | Groq key rotation pool |
 | `services/groq_client.py` | 81 | Groq chat completion HTTP wrapper |
 | `services/guardrail.py` | 179 | Guardrail and continuation classification |
-| `services/ml_adapter.py` | 123 | Model loading and risk scoring fallback |
+| `services/risk_scorer.py` | 124 | Heuristic risk scoring fallback |
 | `services/policy_engine.py` | 181 | Deterministic underwriting checks |
 | `services/profile_parser.py` | 587 | Intake extraction and follow-up orchestration |
 | `services/retriever.py` | 104 | Chroma retrieval and citation building |
@@ -116,7 +116,7 @@ services/retriever.py
 
 - `services/guardrail.py`
 - `services/profile_parser.py`
-- `services/ml_adapter.py`
+- `services/risk_scorer.py`
 - `services/policy_engine.py`
 - `services/retriever.py`
 - `services/report_generator.py`

@@ -107,7 +107,7 @@ Implemented FastAPI endpoints:
 - ChromaDB
 - Chroma ONNX MiniLM embedding function (`ONNXMiniLM_L6_V2`)
 - Groq-hosted Llama models
-- scikit-learn/joblib model adapter
+- Deterministic heuristic risk scoring
 - fpdf2 for PDF generation
 
 ## 9. Deliverables Produced By Milestone 2

@@ -11,13 +11,14 @@ Streamlit + FastAPI + LangGraph + Chroma implementation for conversational credi
 - Compiled professional report PDF: `../../docs/CreditSense_M2_Professional_Report.pdf`
 - Mermaid diagram pack: `../../docs/diagrams/README.md`
 - Primary architecture diagram source: `../../docs/diagrams/system-architecture.mmd`
+- Master docs rewrite prompt: `../../docs/MILESTONE2_MASTER_DOCS_PROMPT.md`
 
 ## Stack
 
 - Frontend: Streamlit (`app.py`)
 - Backend: FastAPI (`api.py`)
 - Orchestration: LangGraph
-- Retrieval: ChromaDB + sentence-transformers
+- Retrieval: ChromaDB + ONNX MiniLM embeddings (via Chroma embedding utilities)
 - LLM provider: Groq API (key rotation supported)
 
 ## Quick Start

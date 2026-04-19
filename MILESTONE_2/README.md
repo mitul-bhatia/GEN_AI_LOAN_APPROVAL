@@ -6,6 +6,14 @@ This milestone contains the active CreditSense v2 implementation under:
 
 > Refreshed from current code scan on 2026-04-19.
 
+## Professional Submission Pack
+
+- Full docs index: `../docs/README.md`
+- Professional LaTeX report: `../docs/CreditSense_M2_Professional_Report.tex`
+- Compiled professional report PDF: `../docs/CreditSense_M2_Professional_Report.pdf`
+- Mermaid architecture diagrams: `../docs/diagrams/README.md`
+- Primary architecture diagram source: `../docs/diagrams/system-architecture.mmd`
+
 ## What Is In Scope
 
 Milestone 2 currently implements:
@@ -14,7 +22,7 @@ Milestone 2 currently implements:
 2. FastAPI backend (`creditsense/api.py`)
 3. LangGraph multi-node orchestration (`creditsense/agent/*`)
 4. Chroma-based RAG ingestion and retrieval (`creditsense/scripts/ingest.py`, `creditsense/services/retriever.py`)
-5. Deterministic policy scoring + ML adapter (`creditsense/services/policy_engine.py`, `creditsense/services/ml_adapter.py`)
+5. Deterministic policy scoring + Heuristic Fallback (`creditsense/services/policy_engine.py`, `creditsense/services/risk_scorer.py`)
 6. English and Hindi report generation with PDF download (`creditsense/services/report_generator.py`, `creditsense/services/translator.py`, `creditsense/services/pdf_exporter.py`)
 
 ## Quick Start
@@ -61,3 +69,8 @@ Inside `creditsense/`:
 Full project documentation is available in:
 
 - `../docs/README.md`
+
+Professional submission report source:
+
+- `../docs/CreditSense_M2_Professional_Report.tex`
+- `../docs/CreditSense_M2_Professional_Report.pdf`

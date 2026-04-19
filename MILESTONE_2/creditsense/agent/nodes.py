@@ -13,7 +13,7 @@ from services.guardrail import (
     check_project_guardrails,
     should_treat_as_continuation,
 )
-from services.ml_adapter import risk_model
+from services.risk_scorer import risk_scorer
 from services.policy_engine import evaluate_policy
 from services.profile_parser import (
     build_follow_up_reply,
@@ -432,7 +432,7 @@ def policy_node(state: AgentState) -> AgentState:
     profile = dict(state.get("borrower_profile") or state.get("collected") or {})
     ratios = dict(state.get("computed_ratios") or {})
 
-    ml_score, ml_class = risk_model.score(profile, ratios)
+    ml_score, ml_class = risk_scorer.score(profile, ratios)
     checks, risk_flags, decision, decision_score = evaluate_policy(profile, ratios, ml_score)
 
     return _merge(state, {
