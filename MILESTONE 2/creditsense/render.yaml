@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: creditsense-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_KEY_1
+        sync: false
+      - key: GROQ_KEY_2
+        sync: false
+      - key: GROQ_KEY_3
+        sync: false
+      - key: CHROMA_PATH
+        value: ./chroma_store
+      - key: COLLECTION_NAME
+        value: creditsense_docs
+      - key: RAG_DOCS_PATH
+        value: ./rag_docs
+      - key: RAG_TOP_K
+        value: "8"
+      - key: DEFAULT_ANNUAL_INTEREST_RATE
+        value: "0.15"
+      - key: PYTHON_VERSION
+        value: "3.11.0"

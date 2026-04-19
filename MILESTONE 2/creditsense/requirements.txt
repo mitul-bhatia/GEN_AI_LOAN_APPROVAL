@@ -16,3 +16,4 @@ joblib
 typing-extensions
 numpy
 pandas
+groq

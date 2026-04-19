@@ -1,0 +1,2 @@
+MILESTONE[[:space:]]2/creditsense/chroma_store/** filter=lfs diff=lfs merge=lfs -text
+*.sqlite3 filter=lfs diff=lfs merge=lfs -text
