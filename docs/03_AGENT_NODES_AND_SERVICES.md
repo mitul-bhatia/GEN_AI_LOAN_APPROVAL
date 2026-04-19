@@ -1,5 +1,7 @@
 # CreditSense Agent Nodes and Services
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. LangGraph Nodes Overview
 
 All nodes are implemented in `agent/nodes.py` and wired in `agent/graph.py`.
@@ -193,3 +195,7 @@ Implemented fallback guarantees ensure output availability:
 ## 13. Execution Trace
 
 State carries `trace` entries (rolling window) to provide node-level execution breadcrumbs for debugging and explainability.
+
+## 14. Runtime Bootstrap Note
+
+`api.py` calls `load_dotenv()` before importing settings-dependent modules so `.env` values are available during service initialization.

@@ -1,5 +1,7 @@
 # CreditSense Model and ML Documentation
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. Overview
 
 Milestone 2 uses a hybrid decision stack:
@@ -150,6 +152,12 @@ RAG embeddings use:
 - `SentenceTransformer("all-MiniLM-L6-v2")`
 
 Used in both ingestion and query time retrieval.
+
+Runtime dependency notes:
+
+- `requirements.txt` currently pins `torch==2.11.0+cpu` for CPU-only embedding runtime.
+- `groq` package is installed, while the implementation currently calls Groq endpoints via `httpx` in `services/groq_client.py`.
+- `api.py` explicitly loads `.env` using `load_dotenv()` before settings-driven imports.
 
 ## 8. Why This Hybrid Approach Works For Milestone 2
 

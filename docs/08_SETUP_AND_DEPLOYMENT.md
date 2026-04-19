@@ -1,5 +1,7 @@
 # CreditSense Setup and Deployment Guide
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. Scope
 
 This guide covers runtime setup for:
@@ -21,6 +23,10 @@ Optional but recommended:
 - working virtual environment
 - Milestone 1 model file for ML adapter fallback path
 
+Current hosted runtime pin file:
+
+- `runtime.txt` -> `python-3.11.0`
+
 ## 3. Environment Setup
 
 From repository root:
@@ -41,6 +47,8 @@ Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+
+Note: current `requirements.txt` includes CPU-only torch index and pin (`torch==2.11.0+cpu`) for embedding stack compatibility.
 
 Create env file:
 
@@ -209,3 +217,9 @@ For hosted deployment, maintain these principles:
 3. inject secrets through host secret manager
 4. expose only required public endpoints
 5. add auth/rate limits before public launch
+
+Deployment helper files currently present in app root:
+
+1. `Procfile`
+2. `render.yaml`
+3. `runtime.txt`

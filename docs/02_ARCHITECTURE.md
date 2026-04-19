@@ -1,5 +1,7 @@
 # CreditSense Milestone 2 Architecture
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. System Architecture (As Built)
 
 ```text
@@ -49,6 +51,7 @@
 - Invokes one graph turn per request
 - Normalizes seeded form parameters
 - Triggers ingestion pipeline when requested
+- Loads environment variables at startup via `python-dotenv`
 
 ### 2.3 Orchestration Layer (`agent/graph.py`)
 
@@ -185,3 +188,9 @@ Practical production split:
 2. Streamlit app host
 3. persistent disk for Chroma store
 4. environment-managed Groq secrets
+
+Repository deployment helpers currently included:
+
+- `Procfile`
+- `render.yaml`
+- `runtime.txt`

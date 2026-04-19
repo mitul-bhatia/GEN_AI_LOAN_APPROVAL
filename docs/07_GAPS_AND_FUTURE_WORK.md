@@ -1,5 +1,7 @@
 # CreditSense Gaps and Future Work
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. Current-State Assessment
 
 Milestone 2 is functionally complete for local conversational underwriting workflow.
@@ -48,9 +50,9 @@ Remaining gaps are primarily around production hardening, evaluation depth, and 
 
 ## 2.5 Deployment Readiness Gaps
 
-1. No containerized deployment assets committed inside `MILESTONE 2/creditsense`
-2. No documented infrastructure-as-code for this specific app folder
-3. No health dashboard/alerting integration by default
+1. Basic deployment manifests exist (`Procfile`, `render.yaml`, `runtime.txt`), but no full multi-environment release workflow yet
+2. No health dashboard/alerting integration by default
+3. No staged rollout/rollback playbook documented yet
 
 ## 3. Technical Debt Items
 

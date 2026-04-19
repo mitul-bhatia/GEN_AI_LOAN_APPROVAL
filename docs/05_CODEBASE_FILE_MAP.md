@@ -1,5 +1,7 @@
 # CreditSense Milestone 2 Codebase File Map
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. Scope Covered
 
 This map covers the runnable Milestone 2 app in:
@@ -12,10 +14,13 @@ This map covers the runnable Milestone 2 app in:
 creditsense/
   .env.example
   .gitignore
+  Procfile
   README.md
   api.py
   app.py
+  render.yaml
   requirements.txt
+  runtime.txt
   agent/
   services/
   scripts/
@@ -28,10 +33,13 @@ creditsense/
 
 | File | Line Count | Responsibility |
 |---|---:|---|
-| `api.py` | 245 | FastAPI backend endpoints and graph invocation |
-| `app.py` | 957 | Streamlit frontend UI and interaction loop |
+| `api.py` | 248 | FastAPI backend endpoints and graph invocation |
+| `app.py` | 956 | Streamlit frontend UI and interaction loop |
 | `requirements.txt` | 18 | Python dependency manifest |
 | `.env.example` | 11 | Environment variable template |
+| `Procfile` | 1 | Process declaration for hosted runtime |
+| `render.yaml` | 24 | Render service blueprint |
+| `runtime.txt` | 1 | Python runtime pin for deployment |
 
 ## 4. Agent Package
 

@@ -1,10 +1,13 @@
 # CreditSense API Reference
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. Service
 
 - Framework: FastAPI
 - Entry file: `MILESTONE 2/creditsense/api.py`
 - Local base URL: `http://localhost:8010`
+- Environment bootstrap: `.env` is loaded via `python-dotenv` during API startup
 
 ## 2. Endpoint Summary
 

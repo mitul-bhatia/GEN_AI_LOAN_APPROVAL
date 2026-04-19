@@ -1,5 +1,7 @@
 # CreditSense V2 PRD (Milestone 2 As-Built)
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. Document Purpose
 
 This PRD captures Milestone 2 requirements as implemented in code, including what is complete, partial, and pending.
@@ -40,6 +42,7 @@ Build a conversational credit assessment assistant that can:
 | Hindi report generation | Complete | `services/translator.py` |
 | English/Hindi PDF download | Complete | `services/pdf_exporter.py`, `app.py` |
 | Public API for agent operations | Complete | `api.py` |
+| Deployment manifest files | Complete | `Procfile`, `render.yaml`, `runtime.txt` |
 | Automated CI testing workflow | Pending | not yet in milestone folder |
 | Auth/rate-limited production API | Pending | not yet implemented |
 

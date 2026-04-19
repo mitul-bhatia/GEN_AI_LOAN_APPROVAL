@@ -1,5 +1,7 @@
 # CreditSense RAG Pipeline
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. Purpose
 
 The RAG pipeline grounds loan guidance and report generation in regulatory text retrieved from the project corpus.
@@ -147,6 +149,7 @@ curl -X POST http://localhost:8010/api/v1/ingest \
 2. Retrieval depth defaults to `RAG_TOP_K` env (default 8).
 3. Embedder is memoized with `lru_cache(maxsize=1)`.
 4. Corpus refresh is manual unless ingestion is re-run.
+5. Current `requirements.txt` pins CPU-only torch (`torch==2.11.0+cpu`) for embedding runtime compatibility.
 
 ## 8. Validation Checklist
 

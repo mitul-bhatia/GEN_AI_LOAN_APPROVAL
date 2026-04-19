@@ -1,5 +1,7 @@
 # CreditSense Milestone 2 Documentation
 
+> Refreshed from current code scan on 2026-04-19.
+
 This folder is the Milestone 2 submission documentation pack for CreditSense.
 It is written as an "as-built" reference based on the current code in:
 
@@ -42,6 +44,7 @@ Use these docs as the single source for:
 | Scripted Runtime | `scripts/run_backend.sh`, `scripts/run_streamlit.sh` |
 | Ingestion | `scripts/ingest.py` |
 | Scenario Validation | `scripts/e2e_scenarios.py` |
+| Deploy Manifests | `Procfile`, `render.yaml`, `runtime.txt` |
 
 ## Fastest Local Start
 

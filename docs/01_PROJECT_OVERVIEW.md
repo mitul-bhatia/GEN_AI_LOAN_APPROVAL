@@ -1,5 +1,7 @@
 # CreditSense Milestone 2 Project Overview
 
+> Refreshed from current code scan on 2026-04-19.
+
 ## 1. Project Context
 
 CreditSense is an AI-assisted credit risk assessment system for NBFC-style loan underwriting workflows.
@@ -45,6 +47,7 @@ Milestone 2 implements an end-to-end conversational pipeline:
 - Node logic: `agent/nodes.py`
 - Service layer: `services/*.py`
 - Ingestion and runtime scripts: `scripts/*.py`
+- Deployment manifests: `Procfile`, `render.yaml`, `runtime.txt`
 
 ### 4.2 Core Features
 
