@@ -1,124 +1,128 @@
-# CreditSense — Project Overview
+# CreditSense Milestone 2 Project Overview
 
-> **AI-Powered NBFC Loan Underwriting & Regulatory Compliance Agent**
+## 1. Project Context
 
----
+CreditSense is an AI-assisted credit risk assessment system for NBFC-style loan underwriting workflows.
 
-## 1. Project Identity
+Milestone 1 delivered classic ML groundwork.
+Milestone 2 delivers the conversational, retrieval-grounded, report-generating agentic system.
 
-| Field | Detail |
-|---|---|
-| **Project Name** | CreditSense |
-| **Current Version** | v2.0 (Milestone 2 — Clean Rebuild) |
-| **Domain** | FinTech / Regulatory Technology (RegTech) |
-| **Target Users** | Loan Officers, NBFC Underwriters, Credit Risk Analysts |
-| **Academic Context** | End-Semester AI/ML Project — Jain University |
-| **Repository Structure** | Multi-milestone monorepo (`MILESTONE 1/`, `MILESTONE 2/`, `RAG files/`, `docs/`) |
+Milestone 2 codebase used for this documentation:
 
----
+- `MILESTONE 2/creditsense/`
 
 ## 2. Problem Statement
 
-Non-Banking Financial Companies (NBFCs) in India operate under a complex and evolving regulatory framework issued by the Reserve Bank of India (RBI). Loan underwriting decisions require:
+Loan decisioning teams face repeated operational pain points:
 
-1. **Manual cross-referencing** of 50+ regulatory circulars, master directions, and prudential norms
-2. **Subjective judgment** on borrower risk profiles with inconsistent application of policy cutoffs
-3. **No audit trail** linking decisions back to specific regulations
-4. **Language barriers** — regulators publish in English, but many stakeholders operate in Hindi
+1. Borrower intake data is often incomplete and gathered manually.
+2. Regulatory context is scattered across many RBI/NBFC documents.
+3. Decision explanations are inconsistent and hard to audit.
+4. Teams need both technical and business-readable output.
+5. Hindi output is often required for wider stakeholder communication.
 
-These gaps introduce compliance risk, slow down decisioning, and create inconsistent borrower experiences.
+## 3. Milestone 2 Solution Summary
 
----
+Milestone 2 implements an end-to-end conversational pipeline:
 
-## 3. Solution — CreditSense Agent
+1. User submits borrower details through sidebar form and/or chat.
+2. Agent guardrails validate domain and safety.
+3. Parser builds a structured borrower profile over turns.
+4. Financial ratios are computed.
+5. RAG retrieves relevant regulatory chunks from Chroma.
+6. Policy checks and ML-based risk scoring are executed.
+7. A structured report is generated in English.
+8. Hindi translation is generated.
+9. English and Hindi PDFs are downloadable.
 
-CreditSense is a **conversational AI agent** that automates the end-to-end loan underwriting workflow:
+## 4. What Is Implemented In Milestone 2
 
-```
-Borrower Input → Profile Extraction → Metric Computation → RAG Retrieval →
-Policy Checks → ML Risk Scoring → Report Generation → Hindi Translation → PDF Export
-```
+### 4.1 Application Layers
 
-### Core Capabilities
+- Streamlit frontend: `app.py`
+- FastAPI backend: `api.py`
+- LangGraph orchestrator: `agent/graph.py`
+- Node logic: `agent/nodes.py`
+- Service layer: `services/*.py`
+- Ingestion and runtime scripts: `scripts/*.py`
 
-| Capability | Implementation |
-|---|---|
-| **Conversational Intake** | Chat-based borrower detail collection with grouped question flow |
-| **Guardrail System** | Multi-layer safety: keyword, LLM, continuation-aware, content abuse filters |
-| **RAG-Grounded Decisions** | 57 RBI documents → 8,452 chunks in ChromaDB → semantic retrieval at decision time |
-| **Deterministic Policy Engine** | NBFC-aligned cutoff checks (credit score, DTI, LTV, employment, history) |
-| **ML Risk Scoring** | Milestone 1 trained model with heuristic fallback |
-| **Structured Report Generation** | LLM-synthesized credit reports with deterministic fallback |
-| **Bilingual Output** | English + Hindi (Devanagari) report generation |
-| **PDF Export** | Downloadable English & Hindi PDFs with proper font rendering |
+### 4.2 Core Features
 
----
+- Multi-turn borrower intake with 15 required fields
+- Guardrail pipeline for unsafe or out-of-domain prompts
+- RAG retrieval from ChromaDB using sentence-transformer embeddings
+- Deterministic policy checks with cutoff thresholds
+- ML risk score adapter with heuristic fallback
+- English report generation (LLM-first with deterministic fallback)
+- Hindi translation (LLM-first with deterministic fallback)
+- PDF export for both languages
 
-## 4. Milestone Progression
+### 4.3 API Surface
 
-### Milestone 1 — Classical ML Foundation
+Implemented FastAPI endpoints:
 
-Built the foundational ML pipeline for credit risk classification:
+- `GET /api/v1/health`
+- `GET /api/v1/agent/state/initial`
+- `POST /api/v1/agent/turn`
+- `POST /api/v1/agent/seed-parameters`
+- `POST /api/v1/ingest`
 
-- **Data pipeline**: Cleaned and preprocessed borrower datasets
-- **Feature engineering**: Age, income, credit score, DTI, LTV, employment tenure
-- **Models trained**: Logistic Regression, Random Forest, and other classifiers
-- **Output**: Serialized `model.pkl` used as the ML signal in Milestone 2
-- **Stack**: Python, scikit-learn, pandas, Streamlit
+## 5. Milestone 1 vs Milestone 2
 
-### Milestone 2 — Agentic AI + RAG (Current)
-
-Complete rebuild as a **LangGraph-orchestrated multi-node agent** with:
-
-- **LangGraph StateGraph**: 6-node directed acyclic graph for conversation → decision pipeline
-- **ChromaDB RAG**: 57 regulatory documents indexed with `all-MiniLM-L6-v2` embeddings
-- **Groq LLM API**: `llama-3.1-8b-instant` (guardrails) + `llama-3.3-70b-versatile` (conversation, report, translation)
-- **FastAPI Backend**: RESTful API serving agent turns, parameter seeding, and ingestion
-- **Streamlit Frontend**: Professional chat UI with parameter form, report panel, and PDF downloads
-
----
-
-## 5. Key Differentiators
-
-| Feature | Why It Matters |
-|---|---|
-| **Deterministic + LLM Hybrid** | Policy engine guarantees consistency; LLM adds natural language and nuance |
-| **Citation Grounding** | Every decision links back to specific regulatory documents |
-| **Fairness-Aware** | No protected attributes in decisioning; explicit fairness note in reports |
-| **Dual Fallback Architecture** | Every LLM call has a deterministic fallback — system works even without API keys |
-| **Audit Trail** | Full state trace logged across all 6 nodes for compliance review |
-
----
-
-## 6. Regulatory Corpus
-
-The system ingests **57 official RBI documents** covering:
-
-| Priority | Category | Examples |
+| Dimension | Milestone 1 | Milestone 2 |
 |---|---|---|
-| **P0 — Critical** | Core NBFC regulations | IRACP Master Circular, Fair Practices Code, Digital Lending Guidelines |
-| **P1 — Important** | Basel & prudential norms | Basel III data, Capital adequacy, Master Directions |
-| **P2 — Reference** | Supporting documents | Ombudsman schemes, FAME reports, demographic studies |
+| Primary Mode | Classical ML workflow | Conversational AI agent workflow |
+| User Interaction | Static forms/notebooks | Chat + dynamic intake + report generation |
+| Retrieval | Not central | Chroma-based RAG |
+| Orchestration | Script-level flow | LangGraph node graph |
+| Output | Model predictions | Full decision report + citations + translation + PDF |
 
-All documents are stored in `RAG files/` and indexed via the ingestion pipeline into ChromaDB.
+## 6. Target Use Cases
 
----
+1. Rapid borrower pre-screening
+2. Assistant support for loan officers
+3. Explainable risk narratives for stakeholder review
+4. RBI/NBFC regulation-aware advisory responses
+5. Bilingual report generation (English/Hindi)
 
-## 7. Technology Stack Summary
+## 7. End-to-End User Flow (Implemented)
 
-| Layer | Technology |
-|---|---|
-| **Orchestration** | LangGraph (StateGraph) |
-| **LLM Provider** | Groq API (Llama 3.1 / 3.3) |
-| **Vector Database** | ChromaDB (persistent, local) |
-| **Embeddings** | `all-MiniLM-L6-v2` (Sentence Transformers) |
-| **Backend API** | FastAPI + Uvicorn |
-| **Frontend** | Streamlit |
-| **ML Framework** | scikit-learn + joblib |
-| **PDF Generation** | fpdf2 (with Noto Sans Devanagari for Hindi) |
-| **HTTP Client** | httpx |
-| **Environment** | python-dotenv |
+1. Start backend + Streamlit app
+2. Save borrower data from sidebar
+3. Ask underwriting-related questions in chat
+4. Ask to "generate report"
+5. Agent performs retrieval + policy + report generation
+6. Read report in app
+7. Download English and Hindi PDFs
 
----
+## 8. Key Technical Stack
 
-*CreditSense v2.0 — Project Overview | Last Updated: April 2026*
+- Python
+- Streamlit
+- FastAPI + Uvicorn
+- LangGraph
+- ChromaDB
+- Sentence Transformers (`all-MiniLM-L6-v2`)
+- Groq-hosted Llama models
+- scikit-learn/joblib model adapter
+- fpdf2 for PDF generation
+
+## 9. Deliverables Produced By Milestone 2
+
+1. Runnable frontend and backend
+2. Agentic graph orchestration
+3. Retrieval and ingestion pipeline
+4. Underwriting policy engine
+5. Bilingual structured report generation
+6. API contracts for integration
+7. Reusable scripts for runtime and testing
+8. Full documentation set (this folder)
+
+## 10. What This Documentation Is Intended For
+
+This docs set is written to be enough for:
+
+- PPT creation without reading code deeply
+- final written report drafting
+- viva defense and architectural explanation
+- implementation walkthrough and handover

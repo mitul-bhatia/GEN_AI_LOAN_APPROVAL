@@ -1,97 +1,85 @@
-# CreditSense — Documentation Index
+# CreditSense Milestone 2 Documentation
 
-> **📚 Complete documentation suite for the CreditSense AI-Powered Loan Underwriting Agent**
+This folder is the Milestone 2 submission documentation pack for CreditSense.
+It is written as an "as-built" reference based on the current code in:
 
----
+- `MILESTONE 2/creditsense/`
 
-## Documentation Map
+Use these docs as the single source for:
 
-| # | Document | Description | Audience |
-|---|---|---|---|
-| **01** | [Project Overview](./01_PROJECT_OVERVIEW.md) | Problem statement, solution summary, milestone progression, tech stack, key differentiators | Everyone |
-| **02** | [Architecture](./02_ARCHITECTURE.md) | High-level system diagram, LangGraph pipeline, AgentState schema, data flow, deployment topology | Developers, Evaluators |
-| **03** | [Agent Nodes & Services](./03_AGENT_NODES_AND_SERVICES.md) | Deep-dive into all 6 LangGraph nodes, guardrail layers, policy engine, scoring logic | Developers |
-| **04** | [RAG Pipeline](./04_RAG_PIPELINE.md) | Document ingestion, chunking, embedding, ChromaDB storage, retrieval architecture | Developers, Evaluators |
-| **05** | [Codebase File Map](./05_CODEBASE_FILE_MAP.md) | Complete file inventory with purpose, dependencies, line counts, dependency graph | Developers |
-| **06** | [Model & ML](./06_MODEL_AND_ML.md) | ML model documentation, LLM assignments, heuristic scoring, embedding model, combined scoring flow | Developers, Evaluators |
-| **07** | [Gaps & Future Work](./07_GAPS_AND_FUTURE_WORK.md) | Known limitations, technical debt, PRD vs. implementation comparison, improvement roadmap | Evaluators, Project Leads |
-| **08** | [Setup & Deployment](./08_SETUP_AND_DEPLOYMENT.md) | Local development setup, environment config, troubleshooting, production deployment guide | Developers |
-| **09** | [API Reference](./09_API_REFERENCE.md) | REST API specification — all endpoints, request/response schemas, cURL examples | Developers |
-| **—** | [Product Requirements (PRD)](./CREDITSENSE_V2_PRD.md) | Original v2.0 product requirements document — user journey, build plan, rubric alignment | Project Leads, Evaluators |
+- project understanding
+- viva and demo prep
+- PPT creation
+- final written report
+- implementation handoff
 
----
+## Document Index
 
-## Quick Navigation
-
-### 🎯 "What does this project do?"
-→ Start with [01 — Project Overview](./01_PROJECT_OVERVIEW.md)
-
-### 🏗️ "How is it architected?"
-→ Read [02 — Architecture](./02_ARCHITECTURE.md) and [03 — Agent Nodes](./03_AGENT_NODES_AND_SERVICES.md)
-
-### 🤖 "How does the AI/ML work?"
-→ Read [06 — Model & ML](./06_MODEL_AND_ML.md) and [04 — RAG Pipeline](./04_RAG_PIPELINE.md)
-
-### 💻 "How do I run it?"
-→ Follow [08 — Setup & Deployment](./08_SETUP_AND_DEPLOYMENT.md)
-
-### 🔌 "What APIs are available?"
-→ Check [09 — API Reference](./09_API_REFERENCE.md)
-
-### ⚠️ "What are the limitations?"
-→ Read [07 — Gaps & Future Work](./07_GAPS_AND_FUTURE_WORK.md)
-
-### 📂 "What file does what?"
-→ Browse [05 — Codebase File Map](./05_CODEBASE_FILE_MAP.md)
-
----
-
-## Project Stats
-
-| Metric | Value |
+| File | What It Covers |
 |---|---|
-| **Total Source Files** | 23 |
-| **Total Lines of Code** | ~3,845 |
-| **LangGraph Nodes** | 6 |
-| **Services** | 13 |
-| **RAG Documents** | 57 |
-| **RAG Chunks** | 8,452 |
-| **API Endpoints** | 5 |
-| **LLM Models Used** | 2 (llama-3.1-8b, llama-3.3-70b) |
-| **Output Languages** | 2 (English, Hindi) |
-| **Policy Checks** | 6 |
-| **Test Scenarios** | 5 |
+| `01_PROJECT_OVERVIEW.md` | Problem, solution, implemented scope, and milestone summary |
+| `02_ARCHITECTURE.md` | End-to-end architecture, data flow, state flow, and routing |
+| `03_AGENT_NODES_AND_SERVICES.md` | All LangGraph nodes and all service modules |
+| `04_RAG_PIPELINE.md` | Ingestion, chunking, embeddings, Chroma storage, retrieval |
+| `05_CODEBASE_FILE_MAP.md` | File-by-file map of Milestone 2 codebase |
+| `06_MODEL_AND_ML.md` | ML adapter, heuristic fallback, policy scoring, LLM model usage |
+| `07_GAPS_AND_FUTURE_WORK.md` | Current limitations, technical debt, and roadmap |
+| `08_SETUP_AND_DEPLOYMENT.md` | Exact run commands, env setup, validation, deployment notes |
+| `09_API_REFERENCE.md` | FastAPI endpoint contracts and request/response examples |
+| `CREDITSENSE_V2_PRD.md` | Milestone 2 PRD (as-built + requirement traceability) |
 
----
+## Milestone 2 At A Glance
 
-## Repository Structure
+| Topic | Current Implementation |
+|---|---|
+| Frontend | Streamlit app (`app.py`) |
+| Backend | FastAPI (`api.py`) |
+| Agent Orchestration | LangGraph StateGraph with 6 nodes |
+| Retrieval | ChromaDB persistent store + MiniLM embeddings |
+| Required Intake Fields | 15 borrower fields |
+| Decision Output | `APPROVE`, `CONDITIONAL`, `ESCALATE` |
+| Report Output | English + Hindi report, both downloadable as PDF |
+| Scripted Runtime | `scripts/run_backend.sh`, `scripts/run_streamlit.sh` |
+| Ingestion | `scripts/ingest.py` |
+| Scenario Validation | `scripts/e2e_scenarios.py` |
 
-```
-JAIN_AI/
-├── MILESTONE 1/          # Classical ML pipeline (data, models, notebooks)
-├── MILESTONE 2/          # Agentic AI + RAG system
-│   └── creditsense/      # Main application
-│       ├── agent/        # LangGraph orchestrator
-│       ├── services/     # Business logic services
-│       ├── scripts/      # Ingestion + testing
-│       ├── app.py        # Streamlit frontend
-│       ├── api.py        # FastAPI backend
-│       └── ...
-├── RAG files/            # 57 RBI regulatory documents
-└── docs/                 # 📍 You are here
-    ├── README.md                    # This index
-    ├── 01_PROJECT_OVERVIEW.md
-    ├── 02_ARCHITECTURE.md
-    ├── 03_AGENT_NODES_AND_SERVICES.md
-    ├── 04_RAG_PIPELINE.md
-    ├── 05_CODEBASE_FILE_MAP.md
-    ├── 06_MODEL_AND_ML.md
-    ├── 07_GAPS_AND_FUTURE_WORK.md
-    ├── 08_SETUP_AND_DEPLOYMENT.md
-    ├── 09_API_REFERENCE.md
-    └── CREDITSENSE_V2_PRD.md
+## Fastest Local Start
+
+From `MILESTONE 2/creditsense`:
+
+```bash
+bash scripts/run_backend.sh
 ```
 
----
+In a second terminal:
 
-*CreditSense v2.0 Documentation Suite | Generated: April 2026*
+```bash
+bash scripts/run_streamlit.sh
+```
+
+Optional one-time ingestion:
+
+```bash
+python3 scripts/ingest.py --source-dir "../../RAG files"
+```
+
+## Suggested Reading Order
+
+1. `01_PROJECT_OVERVIEW.md`
+2. `02_ARCHITECTURE.md`
+3. `03_AGENT_NODES_AND_SERVICES.md`
+4. `04_RAG_PIPELINE.md`
+5. `06_MODEL_AND_ML.md`
+6. `08_SETUP_AND_DEPLOYMENT.md`
+7. `09_API_REFERENCE.md`
+8. `07_GAPS_AND_FUTURE_WORK.md`
+
+## PPT / Report Shortcut
+
+If you only need material for presentation quickly, use this order:
+
+1. `01_PROJECT_OVERVIEW.md` for narrative and business framing
+2. `02_ARCHITECTURE.md` for diagrams and component flow
+3. `04_RAG_PIPELINE.md` for GenAI/RAG methodology
+4. `06_MODEL_AND_ML.md` for scoring logic and model story
+5. `07_GAPS_AND_FUTURE_WORK.md` for honest evaluation and future scope

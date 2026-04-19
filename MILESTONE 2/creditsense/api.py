@@ -4,6 +4,9 @@ import os
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+load_dotenv()  # MUST be before any import that reads env vars
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field

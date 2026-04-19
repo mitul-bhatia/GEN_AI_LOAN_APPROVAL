@@ -94,19 +94,33 @@ STYLES = """
   }
 
   #MainMenu, footer,
-  [data-testid="stHeader"],
   [data-testid="stToolbar"],
-  [data-testid="stDecoration"] { display: none !important; }
+  [data-testid="stDecoration"],
+  [data-testid="stHeader"] { display: none !important; }
 
   [data-testid="stAppViewContainer"],
   [data-testid="stMain"] { background: transparent !important; }
 
-  /* ═══════ SIDEBAR ═══════ */
+  /* ═══════ SIDEBAR — ALWAYS VISIBLE, NO COLLAPSE ═══════ */
   [data-testid="stSidebar"] {
     background: var(--bg-dark) !important;
     border-right: 1px solid var(--border) !important;
     min-width: 320px !important;
+    width: 320px !important;
+    transform: none !important;
+    position: relative !important;
+    z-index: 999 !important;
   }
+  [data-testid="stSidebar"] > div:first-child {
+    width: 320px !important;
+  }
+  /* Hide ALL collapse/expand controls — prevents 'keyboard_dou' text leak */
+  [data-testid="stSidebarCollapsedControl"],
+  [data-testid="stSidebarCollapseButton"],
+  button[data-testid="stBaseButton-header"],
+  button[data-testid="stBaseButton-headerNoPadding"],
+  [data-testid="stSidebar"] button[kind="header"],
+  [data-testid="collapsedControl"] { display: none !important; }
 
   [data-testid="stSidebar"] * { font-family: var(--font) !important; }
 
@@ -308,12 +322,28 @@ STYLES = """
     border-color: var(--green-500) !important;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12) !important;
   }
-  [data-testid="stChatInput"] button {
+  [data-testid="stChatInput"] button,
+  [data-testid="stChatInput"] button[kind="primary"] {
     background: var(--gradient-brand) !important;
-    color: var(--text-on-green) !important;
+    color: white !important;
     border: none !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+    transition: transform 0.15s, box-shadow 0.15s !important;
   }
+  [data-testid="stChatInput"] button:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4) !important;
+  }
+  [data-testid="stChatInput"] button svg { color: white !important; }
 
   /* Also catch any stray white backgrounds in the bottom area */
   .stBottom, .stBottom * {

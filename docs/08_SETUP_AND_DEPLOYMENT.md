@@ -1,250 +1,211 @@
-# CreditSense — Setup & Deployment Guide
+# CreditSense Setup and Deployment Guide
 
-> **Local development, environment configuration, and deployment instructions**
+## 1. Scope
 
----
+This guide covers runtime setup for:
 
-## 1. Prerequisites
+- `MILESTONE 2/creditsense/`
 
-| Requirement | Version | Purpose |
-|---|---|---|
-| **Python** | ≥ 3.10 | Runtime |
-| **pip** | Latest | Package management |
-| **Git** | Latest | Version control |
-| **Groq API Key(s)** | 1-5 keys | LLM inference (guardrail, extraction, report, translation) |
+It includes both script-based startup and manual startup commands.
 
-### Optional
+## 2. Prerequisites
 
-| Requirement | Purpose |
-|---|---|
-| **NotoSansDevanagari-Regular.ttf** | Hindi PDF rendering with Devanagari script |
-| **Milestone 1 model.pkl** | Trained ML risk model (heuristic fallback is available) |
+1. macOS/Linux shell
+2. Python 3.10+
+3. pip
+4. network access for Groq API (optional but recommended)
+5. regulatory corpus path (default `../../RAG files`)
 
----
+Optional but recommended:
 
-## 2. Quick Start
+- working virtual environment
+- Milestone 1 model file for ML adapter fallback path
+
+## 3. Environment Setup
+
+From repository root:
 
 ```bash
-# 1. Clone the repository
-git clone <repo-url>
-cd JAIN_AI/MILESTONE\ 2/creditsense
+cd "MILESTONE 2/creditsense"
+```
 
-# 2. Create virtual environment
+Create and activate venv (if needed):
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
 
-# 3. Install dependencies
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
+```
 
-# 4. Configure environment
+Create env file:
+
+```bash
 cp .env.example .env
-# Edit .env and add your Groq API key(s):
-#   GROQ_KEY_1=gsk_...
-#   GROQ_KEY_2=gsk_...  (optional)
-
-# 5. Ingest RAG documents (one-time)
-python scripts/ingest.py --source-dir "../../RAG files"
-
-# 6. Start the backend (Terminal 1)
-uvicorn api:app --host 0.0.0.0 --port 8010
-
-# 7. Start the frontend (Terminal 2)
-streamlit run app.py --server.port 8502
-
-# 8. Open in browser
-# Frontend: http://localhost:8502
-# Backend API: http://localhost:8010
-# Health Check: http://localhost:8010/api/v1/health
 ```
 
----
+Edit `.env` and set at least one Groq key:
 
-## 3. Environment Variables
+```env
+GROQ_KEY_1=your_groq_key
+```
 
-### Required
+## 4. Environment Variables (Implemented)
+
+From `.env.example` and settings:
+
+- `GROQ_KEY_1`, `GROQ_KEY_2`, `GROQ_KEY_3`
+- `CHROMA_PATH`
+- `COLLECTION_NAME`
+- `RAG_DOCS_PATH`
+- `RAG_TOP_K`
+- `DEFAULT_ANNUAL_INTEREST_RATE`
+- `ML_MODEL_PATH`
+- `HINDI_FONT_PATH`
+
+Runtime helper variables used by scripts:
+
+- `BACKEND_PORT` (default 8010)
+- `STREAMLIT_PORT` (script default 8502)
+- `BACKEND_API_BASE_URL`
+- `PYTHON_BIN`
+- `STREAMLIT_FILE_WATCHER_TYPE`
+
+## 5. One-Time Ingestion
+
+Run from `MILESTONE 2/creditsense`.
+
+Default:
 
 ```bash
-# At least ONE Groq key is required for LLM features
-GROQ_KEY_1=gsk_your_key_here
+python3 scripts/ingest.py
 ```
 
-### Optional (with defaults)
+Workspace corpus explicit path:
 
 ```bash
-# Additional Groq keys for round-robin pool
-GROQ_KEY_2=gsk_...
-GROQ_KEY_3=gsk_...
-GROQ_KEY_4=gsk_...
-GROQ_KEY_5=gsk_...
-GROQ_API_KEY=gsk_...           # Alternative single key variable
-
-# Paths
-CHROMA_PATH=./chroma_store                     # ChromaDB persistence dir
-COLLECTION_NAME=creditsense_docs               # ChromaDB collection name
-RAG_DOCS_PATH=../../RAG files                  # Source regulatory documents
-ML_MODEL_PATH=./ml_model/model.pkl             # Trained ML model
-ML_MODEL_FALLBACK_PATH=../../MILESTONE 1/models/logistic_regression.pkl
-HINDI_FONT_PATH=./assets/fonts/NotoSansDevanagari-Regular.ttf
-
-# Server Configuration
-BACKEND_API_BASE_URL=http://localhost:8010      # Backend URL for Streamlit
-BACKEND_CORS_ORIGINS=http://localhost:8501,http://localhost:8502,http://localhost:3000
-
-# RAG Parameters
-RAG_TOP_K=8                                     # Number of chunks to retrieve
-DEFAULT_ANNUAL_INTEREST_RATE=0.15               # 15% annual interest for EMI calc
+python3 scripts/ingest.py --source-dir "../../RAG files"
 ```
 
----
-
-## 4. Dependency Manifest
-
-### Python Packages (`requirements.txt`)
-
-| Package | Version | Purpose |
-|---|---|---|
-| `streamlit` | ≥ 1.32.0 | Frontend UI framework |
-| `fastapi` | ≥ 0.111.0 | Backend API framework |
-| `uvicorn` | ≥ 0.30.0 | ASGI server |
-| `langgraph` | ≥ 0.1.0 | Agent graph orchestration |
-| `chromadb` | ≥ 0.4.0 | Vector database |
-| `sentence-transformers` | Latest | Embedding model |
-| `pdfplumber` | Latest | PDF text extraction |
-| `python-docx` | Latest | DOCX text extraction |
-| `fpdf2` | Latest | PDF generation |
-| `reportlab` | Latest | Alternative PDF library |
-| `httpx` | Latest | HTTP client (Groq API, backend) |
-| `pydantic` | ≥ 2.0 | Data validation |
-| `python-dotenv` | Latest | Environment variable loading |
-| `scikit-learn` | Latest | ML model framework |
-| `joblib` | Latest | Model serialization |
-| `typing-extensions` | Latest | Type hint support |
-| `numpy` | Latest | Numerical computing |
-| `pandas` | Latest | DataFrame operations |
-
----
-
-## 5. Running Individual Components
-
-### 5.1 Backend Only
+API-triggered ingestion option:
 
 ```bash
-cd creditsense
-uvicorn api:app --host 0.0.0.0 --port 8010 --reload
+curl -X POST http://localhost:8010/api/v1/ingest \
+  -H "Content-Type: application/json" \
+  -d '{"source_dir": "../../RAG files"}'
 ```
 
-### 5.2 Frontend Only (requires backend running)
+## 6. Start Commands (Recommended)
+
+Use helper scripts in two terminals.
+
+Terminal 1:
 
 ```bash
-cd creditsense
-streamlit run app.py --server.port 8502
+bash scripts/run_backend.sh
 ```
 
-### 5.3 RAG Ingestion
+Terminal 2:
 
 ```bash
-# Default source (auto-discovers ../../RAG files/)
-python scripts/ingest.py
-
-# Custom source
-python scripts/ingest.py --source-dir ./rag_docs --chunk-size 1200 --overlap 150
-
-# Full options
-python scripts/ingest.py \
-  --source-dir "../../RAG files" \
-  --chroma-path ./chroma_store \
-  --collection creditsense_docs \
-  --chunk-size 1200 \
-  --overlap 150 \
-  --embedding-model all-MiniLM-L6-v2
+bash scripts/run_streamlit.sh
 ```
 
-### 5.4 End-to-End Testing
+Notes:
+
+1. backend script defaults to port `8010`
+2. streamlit script defaults to port `8502`
+3. scripts attempt to clear stale listeners on common ports
+4. backend script auto-sets `RAG_DOCS_PATH` to `../../RAG files` if present
+
+## 7. Start Commands (Manual Alternative)
+
+Terminal 1 (backend):
 
 ```bash
-# Start backend first, then run:
-python scripts/e2e_scenarios.py --base-url http://localhost:8010 --pretty
+python3 -m uvicorn api:app --host 0.0.0.0 --port 8010
 ```
 
-This runs 5 borrower scenarios and validates:
-- Report generation
-- RAG chunk retrieval
-- Citation presence
-- Decision scoring
-
----
-
-## 6. Verification Checklist
-
-After setup, verify the system is working:
-
-| Check | Command/URL | Expected |
-|---|---|---|
-| Backend health | `GET http://localhost:8010/api/v1/health` | `{"status": "ok", ...}` |
-| Initial state | `GET http://localhost:8010/api/v1/agent/state/initial` | `{"state": {...}}` |
-| Streamlit UI | `http://localhost:8502` | CreditSense Agent page loads |
-| Backend connection | Check "Backend Connected" badge in UI | Green success badge |
-| Groq API | Fill form + send chat message | Agent responds (not error) |
-| RAG retrieval | Complete profile + "generate report" | Report includes regulatory citations |
-| PDF download | Click download buttons after report | PDF files download |
-
----
-
-## 7. Troubleshooting
-
-### Common Issues
-
-| Problem | Cause | Solution |
-|---|---|---|
-| "Backend Offline" in UI | Backend not running or wrong port | Start `uvicorn api:app --port 8010` |
-| "No Groq API keys configured" | Missing `.env` file or empty keys | Add `GROQ_KEY_1=gsk_...` to `.env` |
-| Empty RAG results | ChromaDB not indexed | Run `python scripts/ingest.py --source-dir "../../RAG files"` |
-| Hindi PDF shows Latin text | Missing Devanagari font | Place `NotoSansDevanagari-Regular.ttf` in `assets/fonts/` |
-| ModuleNotFoundError | Dependencies not installed | Run `pip install -r requirements.txt` |
-| "Agent execution failed" | LLM rate limit or timeout | Check Groq API status; add more keys |
-| Streamlit port conflict | Port 8502 in use | Use `streamlit run app.py --server.port 8503` |
-
----
-
-## 8. Production Deployment (Planned)
-
-### 8.1 Streamlit Community Cloud
+Terminal 2 (frontend):
 
 ```bash
-# 1. Push chroma_store/ to repo (pre-indexed)
-# 2. Create secrets.toml in Streamlit Cloud dashboard:
-#    [secrets]
-#    GROQ_KEY_1 = "gsk_..."
-#    BACKEND_API_BASE_URL = "https://your-render-backend.onrender.com"
+python3 -m streamlit run app.py --server.port 8502 --server.headless true --server.fileWatcherType none
 ```
 
-### 8.2 Render Backend
+## 8. Health and Smoke Validation
+
+Backend health:
 
 ```bash
-# Use infra/render.yaml blueprint:
-# - Web Service: FastAPI backend (Python runtime)
-# - Private Service: ChromaDB with persistent disk at /data/chroma
+curl http://localhost:8010/api/v1/health
 ```
 
-### 8.3 Deployment Architecture
+Expected shape:
 
-```
-┌────────────────────┐          ┌─────────────────────────┐
-│  Streamlit Cloud   │──HTTPS──▸│  Render Web Service     │
-│  (Frontend)        │          │  (FastAPI Backend)       │
-│                    │          │                          │
-│  secrets.toml      │          │  .env from Render        │
-│  for API keys      │          │  dashboard               │
-└────────────────────┘          └──────────┬──────────────┘
-                                           │ internal
-                                           ▼
-                                ┌─────────────────────────┐
-                                │  Render Private Service  │
-                                │  (ChromaDB)              │
-                                │  Persistent Disk: /data  │
-                                └─────────────────────────┘
+```json
+{
+  "status": "ok",
+  "service": "CreditSense Backend API",
+  "chroma_path": "...",
+  "collection": "creditsense_docs"
+}
 ```
 
----
+Fetch initial state:
 
-*CreditSense v2.0 — Setup & Deployment Guide | Last Updated: April 2026*
+```bash
+curl http://localhost:8010/api/v1/agent/state/initial
+```
+
+## 9. Scenario Test Script
+
+Run all predefined borrower scenarios:
+
+```bash
+python3 scripts/e2e_scenarios.py --base-url http://localhost:8010 --pretty
+```
+
+Important:
+
+- script default base URL is `http://localhost:8000`
+- pass `--base-url` for port `8010`
+
+## 10. Troubleshooting
+
+### 10.1 Backend not reachable
+
+1. verify backend process is running
+2. verify port in use (`8010` expected)
+3. check `BACKEND_API_BASE_URL` used by frontend
+
+### 10.2 No citations in report
+
+1. verify ingestion completed successfully
+2. verify collection path and collection name match runtime settings
+3. confirm corpus directory has readable files
+
+### 10.3 Groq errors or slow responses
+
+1. validate key values in env
+2. use multiple keys for rotation
+3. verify outbound network
+
+### 10.4 Hindi PDF rendering issue
+
+1. ensure `assets/fonts/NotoSansDevanagari-Regular.ttf` exists
+2. verify `HINDI_FONT_PATH` matches actual location
+
+## 11. Deployment Notes (Practical)
+
+Current repo supports local-first execution directly.
+For hosted deployment, maintain these principles:
+
+1. host FastAPI separately from Streamlit
+2. persist Chroma storage on durable disk
+3. inject secrets through host secret manager
+4. expose only required public endpoints
+5. add auth/rate limits before public launch
