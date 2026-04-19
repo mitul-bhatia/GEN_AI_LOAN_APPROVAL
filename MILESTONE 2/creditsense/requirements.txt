@@ -1,26 +1,22 @@
-# Force CPU-only torch — avoids 2GB+ of NVIDIA/CUDA packages on Render
+# CPU-only torch — no NVIDIA/CUDA on Render
 --extra-index-url https://download.pytorch.org/whl/cpu
-
 torch==2.2.2+cpu
-torchvision==0.17.2+cpu
 
-# Core app
+# Core
 streamlit>=1.32.0
 fastapi>=0.111.0
 uvicorn>=0.30.0
 langgraph>=0.1.0
 
-# Vector DB — uses onnxruntime (CPU), no GPU needed
+# Vector DB + Embeddings (same as local)
 chromadb>=0.4.0
-
-# Embeddings — CPU only (no GPU needed)
-sentence-transformers>=2.6.0
+sentence-transformers
 
 # Document parsing
 pdfplumber
 python-docx
 
-# PDF report generation
+# PDF reports
 fpdf2
 reportlab
 
@@ -35,5 +31,5 @@ joblib
 numpy
 pandas
 
-# LLM API (Groq — cloud, no local GPU)
+# LLM
 groq
