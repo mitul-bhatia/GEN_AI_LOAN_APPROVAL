@@ -6,7 +6,7 @@
 
 This map covers the runnable Milestone 2 app in:
 
-- `MILESTONE 2/creditsense/`
+- `MILESTONE_2/creditsense/`
 
 ## 2. Top-Level Structure
 
@@ -26,19 +26,18 @@ creditsense/
   scripts/
   assets/
   chroma_store/
-  rag_docs/
 ```
 
 ## 3. Core Entry Files
 
 | File | Line Count | Responsibility |
 |---|---:|---|
-| `api.py` | 248 | FastAPI backend endpoints and graph invocation |
+| `api.py` | 254 | FastAPI backend endpoints and graph invocation |
 | `app.py` | 956 | Streamlit frontend UI and interaction loop |
-| `requirements.txt` | 18 | Python dependency manifest |
-| `.env.example` | 11 | Environment variable template |
+| `requirements.txt` | 30 | Python dependency manifest |
+| `.env.example` | 12 | Environment variable template |
 | `Procfile` | 1 | Process declaration for hosted runtime |
-| `render.yaml` | 24 | Render service blueprint |
+| `render.yaml` | 26 | Render service blueprint |
 | `runtime.txt` | 1 | Python runtime pin for deployment |
 
 ## 4. Agent Package
@@ -64,7 +63,7 @@ creditsense/
 | `services/ml_adapter.py` | 123 | Model loading and risk scoring fallback |
 | `services/policy_engine.py` | 181 | Deterministic underwriting checks |
 | `services/profile_parser.py` | 587 | Intake extraction and follow-up orchestration |
-| `services/retriever.py` | 103 | Chroma retrieval and citation building |
+| `services/retriever.py` | 104 | Chroma retrieval and citation building |
 | `services/report_generator.py` | 214 | English report generation logic |
 | `services/translator.py` | 83 | Hindi translation logic |
 | `services/pdf_exporter.py` | 169 | PDF export bytes generation |
@@ -85,7 +84,7 @@ creditsense/
 |---|---|
 | `assets/fonts/NotoSansDevanagari-Regular.ttf` | Hindi PDF font support |
 | `chroma_store/` | Local persistent vector database files |
-| `rag_docs/` | Local optional corpus directory (fallback source) |
+| `../../RAG files` | Default workspace corpus path auto-detected by settings/scripts |
 
 ## 8. Dependency Flow Summary
 
@@ -98,7 +97,7 @@ app.py
               -> services/* modules
 
 scripts/ingest.py
-  -> chromadb + sentence-transformers
+  -> chromadb + ONNXMiniLM_L6_V2 embedder
   -> writes to chroma_store/
 
 services/retriever.py

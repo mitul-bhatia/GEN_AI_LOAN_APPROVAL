@@ -6,7 +6,7 @@
 
 This guide covers runtime setup for:
 
-- `MILESTONE 2/creditsense/`
+- `MILESTONE_2/creditsense/`
 
 It includes both script-based startup and manual startup commands.
 
@@ -32,7 +32,7 @@ Current hosted runtime pin file:
 From repository root:
 
 ```bash
-cd "MILESTONE 2/creditsense"
+cd "MILESTONE_2/creditsense"
 ```
 
 Create and activate venv (if needed):
@@ -48,7 +48,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Note: current `requirements.txt` includes CPU-only torch index and pin (`torch==2.11.0+cpu`) for embedding stack compatibility.
+Note: current embedding path uses Chroma's ONNX MiniLM utility; `requirements.txt` does not include a separate `sentence-transformers` or `torch` pin.
 
 Create env file:
 
@@ -85,7 +85,7 @@ Runtime helper variables used by scripts:
 
 ## 5. One-Time Ingestion
 
-Run from `MILESTONE 2/creditsense`.
+Run from `MILESTONE_2/creditsense`.
 
 Default:
 

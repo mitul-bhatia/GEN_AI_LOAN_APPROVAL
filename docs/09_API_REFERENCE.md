@@ -5,7 +5,7 @@
 ## 1. Service
 
 - Framework: FastAPI
-- Entry file: `MILESTONE 2/creditsense/api.py`
+- Entry file: `MILESTONE_2/creditsense/api.py`
 - Local base URL: `http://localhost:8010`
 - Environment bootstrap: `.env` is loaded via `python-dotenv` during API startup
 
@@ -67,6 +67,8 @@
   "embedding_model": "all-MiniLM-L6-v2"
 }
 ```
+
+Note: `embedding_model` is currently retained for request compatibility; ingestion implementation uses Chroma's ONNX MiniLM embedding utility.
 
 ## 4. Endpoint Details
 

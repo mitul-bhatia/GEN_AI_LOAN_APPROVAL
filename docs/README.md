@@ -5,7 +5,7 @@
 This folder is the Milestone 2 submission documentation pack for CreditSense.
 It is written as an "as-built" reference based on the current code in:
 
-- `MILESTONE 2/creditsense/`
+- `MILESTONE_2/creditsense/`
 
 Use these docs as the single source for:
 
@@ -29,6 +29,10 @@ Use these docs as the single source for:
 | `08_SETUP_AND_DEPLOYMENT.md` | Exact run commands, env setup, validation, deployment notes |
 | `09_API_REFERENCE.md` | FastAPI endpoint contracts and request/response examples |
 | `CREDITSENSE_V2_PRD.md` | Milestone 2 PRD (as-built + requirement traceability) |
+| `CreditSense_M2_Professional_Report.tex` | Full professional LaTeX report for final submission and viva |
+| `CreditSense_M2_Professional_Report.pdf` | Compiled submission-ready PDF of the professional report |
+| `diagrams/README.md` | Mermaid diagram pack and export instructions for upload-ready images |
+| `MILESTONE2_MASTER_DOCS_PROMPT.md` | Detailed master prompt for exhaustive, code-grounded docs regeneration |
 
 ## Milestone 2 At A Glance
 
@@ -48,7 +52,7 @@ Use these docs as the single source for:
 
 ## Fastest Local Start
 
-From `MILESTONE 2/creditsense`:
+From `MILESTONE_2/creditsense`:
 
 ```bash
 bash scripts/run_backend.sh
@@ -86,3 +90,11 @@ If you only need material for presentation quickly, use this order:
 3. `04_RAG_PIPELINE.md` for GenAI/RAG methodology
 4. `06_MODEL_AND_ML.md` for scoring logic and model story
 5. `07_GAPS_AND_FUTURE_WORK.md` for honest evaluation and future scope
+
+## Viva Upload Assets (Image Requirement)
+
+For form fields like "Project Architecture Diagram (Upload image)":
+
+1. Use Mermaid source: `diagrams/system-architecture.mmd`
+2. Export PNG using instructions in `diagrams/README.md`
+3. Upload the generated image from `diagrams/exports/system-architecture.png` (keep file size under your portal limit)

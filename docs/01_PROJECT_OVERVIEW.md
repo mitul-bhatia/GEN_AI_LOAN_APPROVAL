@@ -11,7 +11,7 @@ Milestone 2 delivers the conversational, retrieval-grounded, report-generating a
 
 Milestone 2 codebase used for this documentation:
 
-- `MILESTONE 2/creditsense/`
+- `MILESTONE_2/creditsense/`
 
 ## 2. Problem Statement
 
@@ -105,7 +105,7 @@ Implemented FastAPI endpoints:
 - FastAPI + Uvicorn
 - LangGraph
 - ChromaDB
-- Sentence Transformers (`all-MiniLM-L6-v2`)
+- Chroma ONNX MiniLM embedding function (`ONNXMiniLM_L6_V2`)
 - Groq-hosted Llama models
 - scikit-learn/joblib model adapter
 - fpdf2 for PDF generation

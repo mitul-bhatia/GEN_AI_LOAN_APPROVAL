@@ -151,7 +151,7 @@ EMI uses standard amortization formula with configurable annual rate.
 Runtime order:
 
 1. Try model at `ML_MODEL_PATH`
-2. Fallback to `ML_MODEL_FALLBACK_PATH`
+2. Fallback to settings default path (`../../MILESTONE 1/models/logistic_regression.pkl`), optionally overridden by `ML_MODEL_FALLBACK_PATH`
 3. If loading/scoring fails, use heuristic score
 
 Risk class mapping:

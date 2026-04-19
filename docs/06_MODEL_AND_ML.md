@@ -149,13 +149,13 @@ EMI formula uses annual interest rate from settings (`DEFAULT_ANNUAL_INTEREST_RA
 
 RAG embeddings use:
 
-- `SentenceTransformer("all-MiniLM-L6-v2")`
+- `chromadb.utils.embedding_functions.ONNXMiniLM_L6_V2()`
 
 Used in both ingestion and query time retrieval.
 
 Runtime dependency notes:
 
-- `requirements.txt` currently pins `torch==2.11.0+cpu` for CPU-only embedding runtime.
+- `requirements.txt` currently does not include `sentence-transformers` or `torch`; embedding runtime is provided through Chroma's ONNX embedding utility.
 - `groq` package is installed, while the implementation currently calls Groq endpoints via `httpx` in `services/groq_client.py`.
 - `api.py` explicitly loads `.env` using `load_dotenv()` before settings-driven imports.
 
@@ -169,7 +169,7 @@ Runtime dependency notes:
 
 ## 9. Practical Validation Commands
 
-From `MILESTONE 2/creditsense`:
+From `MILESTONE_2/creditsense`:
 
 ```bash
 python3 scripts/e2e_scenarios.py --base-url http://localhost:8010 --pretty

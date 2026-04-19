@@ -36,7 +36,7 @@ flowchart TB
   subgraph Intelligence_Data_Layer[Intelligence and Data Layer]
     Ret["ChromaRetriever\nservices/retriever.py"]
     Chroma[("ChromaDB Persistent Store")]
-    Emb["SentenceTransformer\nall-MiniLM-L6-v2"]
+    Emb["ONNX MiniLM Embedder\nONNXMiniLM_L6_V2"]
     Policy["Policy Engine\nservices/policy_engine.py"]
     ML["ML Adapter and Heuristic\nservices/ml_adapter.py"]
     LLM["Groq LLM Pool\nservices/groq_client.py"]

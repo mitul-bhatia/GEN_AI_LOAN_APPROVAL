@@ -8,8 +8,8 @@ The RAG pipeline grounds loan guidance and report generation in regulatory text 
 
 Implementation points:
 
-- ingestion script: `MILESTONE 2/creditsense/scripts/ingest.py`
-- retriever service: `MILESTONE 2/creditsense/services/retriever.py`
+- ingestion script: `MILESTONE_2/creditsense/scripts/ingest.py`
+- retriever service: `MILESTONE_2/creditsense/services/retriever.py`
 - vector store path: `CHROMA_PATH` (default `./chroma_store`)
 - collection name: `COLLECTION_NAME` (default `creditsense_docs`)
 
@@ -47,8 +47,8 @@ Extraction behavior:
 
 For each chunk batch:
 
-1. encode using `SentenceTransformer(embedding_model)`
-2. normalize embeddings
+1. encode using Chroma ONNX embedding function `ONNXMiniLM_L6_V2()`
+2. generate deterministic vector output per chunk batch
 3. upsert to Chroma with metadata:
    - `source_file`
    - `priority`
@@ -86,7 +86,7 @@ Retrieval entrypoints:
 
 ### 4.2 Similarity Search
 
-1. encode query text using MiniLM embedder
+1. encode query text using ONNX MiniLM embedder (`ONNXMiniLM_L6_V2`)
 2. query Chroma collection with `n_results = top_k or settings.rag_top_k`
 3. include documents, metadata, and distances
 
@@ -99,7 +99,7 @@ Returns both:
 
 ## 5. End-to-End Ingestion Commands
 
-Run from `MILESTONE 2/creditsense`.
+Run from `MILESTONE_2/creditsense`.
 
 ### 5.1 Default ingestion
 
@@ -149,7 +149,7 @@ curl -X POST http://localhost:8010/api/v1/ingest \
 2. Retrieval depth defaults to `RAG_TOP_K` env (default 8).
 3. Embedder is memoized with `lru_cache(maxsize=1)`.
 4. Corpus refresh is manual unless ingestion is re-run.
-5. Current `requirements.txt` pins CPU-only torch (`torch==2.11.0+cpu`) for embedding runtime compatibility.
+5. `--embedding-model` is currently accepted by the script/API for compatibility, while implementation uses the ONNX MiniLM embedder from Chroma utilities.
 
 ## 8. Validation Checklist
 

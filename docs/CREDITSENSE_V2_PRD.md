@@ -8,7 +8,7 @@ This PRD captures Milestone 2 requirements as implemented in code, including wha
 
 Implementation baseline:
 
-- `MILESTONE 2/creditsense/`
+- `MILESTONE_2/creditsense/`
 
 ## 2. Product Goal
 

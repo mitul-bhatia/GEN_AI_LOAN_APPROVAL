@@ -132,7 +132,7 @@ Major state blocks:
 ## 7. Retrieval Architecture
 
 - Vector store: Chroma persistent client
-- Embedding model: `all-MiniLM-L6-v2`
+- Embedding function: `chromadb.utils.embedding_functions.ONNXMiniLM_L6_V2`
 - Query includes profile factors + conversation context
 - Default retrieval depth: `RAG_TOP_K` (default 8)
 
@@ -170,7 +170,7 @@ Important keys:
 - `RAG_TOP_K`
 - `DEFAULT_ANNUAL_INTEREST_RATE`
 - `ML_MODEL_PATH`
-- `ML_MODEL_FALLBACK_PATH`
+- optional override: `ML_MODEL_FALLBACK_PATH`
 - `HINDI_FONT_PATH`
 - `BACKEND_API_BASE_URL`
 
