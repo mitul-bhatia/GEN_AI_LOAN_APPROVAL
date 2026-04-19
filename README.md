@@ -22,6 +22,56 @@ Understanding how CreditSense works is critical for auditability. We utilize a *
 
 ---
 
+<br>
+
+<div align="center">
+  <h2>👥 Core Team & Project Contributions</h2>
+  <img src="https://img.shields.io/badge/Milestone-Complete-blue?style=flat-square" />
+</div>
+
+<table align="center" width="100%">
+  <tr>
+    <td align="center" width="25%">
+      <b>👨‍💻 Mitul</b><br>
+      <i>Project Lead &<br>Full-Stack Development</i>
+    </td>
+    <td width="75%">
+      Spearheaded the overall software architecture. Engineered the FastAPI backend, Streamlit frontend, LangGraph orchestration, local RAG integration, and deployment pipelines.
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>📚 Vaibhav</b><br>
+      <i>Technical Documentation &<br>Report Strategy</i>
+    </td>
+    <td>
+      Structured and developed the comprehensive project documentation, system architecture records, READMEs, and the formal technical submission report.
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>🖥️ Sarvjeet</b><br>
+      <i>Media &<br>Presentation Lead</i>
+    </td>
+    <td>
+      Designed and delivered the final project presentation (PowerPoint), mapped the technical flow into digestible visual slides, and produced the final demo walkthrough video.
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>💡 Hardik</b><br>
+      <i>Product Ideation &<br>Strategy</i>
+    </td>
+    <td>
+      Led the initial concept framing, conceptualized the integration of RBI guidelines, structured the business logic requirements (e.g., Debt-to-Income, LTV ratios), and defined the target user-experience.
+    </td>
+  </tr>
+</table>
+
+<br>
+
+---
+
 ## 📑 The Professional Visual Report (Agentic AI Whitepaper)
 
 For deep academic or architectural review, we have included a highly structured **Agentic AI Whitepaper**. It fundamentally details how the architectural problem of LLM hallucination is solved through our LangGraph Multi-Agent implementation.
