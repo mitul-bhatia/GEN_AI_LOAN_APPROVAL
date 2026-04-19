@@ -4,7 +4,7 @@ from functools import lru_cache
 from typing import Any
 
 import chromadb
-from sentence_transformers import SentenceTransformer
+from chromadb.utils.embedding_functions import ONNXMiniLM_L6_V2
 
 from .settings import settings
 
@@ -29,8 +29,8 @@ def build_query_from_profile(
 
 
 @lru_cache(maxsize=1)
-def _embedder() -> SentenceTransformer:
-    return SentenceTransformer("all-MiniLM-L6-v2")
+def _embedder() -> ONNXMiniLM_L6_V2:
+    return ONNXMiniLM_L6_V2()
 
 
 class ChromaRetriever:
@@ -62,7 +62,8 @@ class ChromaRetriever:
         if collection.count() == 0:
             return [], []
 
-        embedding = _embedder().encode([query_text], normalize_embeddings=True).tolist()[0]
+        embedding_func = _embedder()
+        embedding = embedding_func([query_text])[0]
         result = collection.query(
             query_embeddings=[embedding],
             n_results=top_k or settings.rag_top_k,

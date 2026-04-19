@@ -4,6 +4,14 @@ Streamlit + FastAPI + LangGraph + Chroma implementation for conversational credi
 
 > Refreshed from current code scan on 2026-04-19.
 
+## Professional Report and Architecture Assets
+
+- Full documentation hub: `../../docs/README.md`
+- Professional LaTeX report: `../../docs/CreditSense_M2_Professional_Report.tex`
+- Compiled professional report PDF: `../../docs/CreditSense_M2_Professional_Report.pdf`
+- Mermaid diagram pack: `../../docs/diagrams/README.md`
+- Primary architecture diagram source: `../../docs/diagrams/system-architecture.mmd`
+
 ## Stack
 
 - Frontend: Streamlit (`app.py`)

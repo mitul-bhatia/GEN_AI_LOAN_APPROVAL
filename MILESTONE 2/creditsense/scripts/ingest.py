@@ -6,9 +6,9 @@ import os
 from pathlib import Path
 
 import chromadb
+from chromadb.utils.embedding_functions import ONNXMiniLM_L6_V2
 import docx
 import pdfplumber
-from sentence_transformers import SentenceTransformer
 
 
 SUPPORTED_EXTENSIONS = {".pdf", ".txt", ".md", ".docx", ".html", ".htm"}
@@ -141,7 +141,7 @@ def ingest(
 
     client = chromadb.PersistentClient(path=str(chroma_path))
     collection = client.get_or_create_collection(collection_name)
-    embedder = SentenceTransformer(embedding_model)
+    embedder = ONNXMiniLM_L6_V2()
 
     total_chunks = 0
     for file_path in files:
@@ -152,7 +152,7 @@ def ingest(
                 print(f"Skipping empty file: {file_path}")
                 continue
 
-            embeddings = embedder.encode(chunks, normalize_embeddings=True).tolist()
+            embeddings = embedder(chunks)
             rel_source = str(file_path.relative_to(source_dir))
             priority = infer_priority(file_path.name)
 
