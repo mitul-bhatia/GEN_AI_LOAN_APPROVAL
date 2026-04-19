@@ -12,8 +12,6 @@ Milestone 2 uses a hybrid decision stack:
 
 This design keeps decision math auditable while still enabling natural language output.
 
-
-
 ## 2. Heuristic Risk Scorer (`services/risk_scorer.py`)
 
 A pure mathematical ruleset is used to generate the initial risk score. The score starts at 50 and adjusts by borrower profile:

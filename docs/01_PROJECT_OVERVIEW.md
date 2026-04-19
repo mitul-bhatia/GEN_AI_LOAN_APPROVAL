@@ -75,7 +75,7 @@ Implemented FastAPI endpoints:
 ## 5. Milestone 1 vs Milestone 2
 
 | Dimension | Milestone 1 | Milestone 2 |
-|---|---|---|
+| --- | --- | --- |
 | Primary Mode | Classical ML workflow | Conversational AI agent workflow |
 | User Interaction | Static forms/notebooks | Chat + dynamic intake + report generation |
 | Retrieval | Not central | Chroma-based RAG |

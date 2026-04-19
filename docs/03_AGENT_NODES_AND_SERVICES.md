@@ -7,7 +7,7 @@
 All nodes are implemented in `agent/nodes.py` and wired in `agent/graph.py`.
 
 | Node | Primary Purpose | Main Outputs |
-|---|---|---|
+| --- | --- | --- |
 | `guardrail_node` | Safety and domain gating | `is_finance_query`, `assistant_reply`, `guardrail_reason` |
 | `conversation_node` | Intake extraction and response handling | `collected`, `missing_fields`, `profile_complete`, `assistant_reply` |
 | `rag_retriever_node` | Regulatory retrieval | `rag_chunks`, `citations`, `conversation_context` |
@@ -120,7 +120,7 @@ Report chain runs only when profile complete and report requested.
 ## 8. Service Layer Inventory
 
 | Service | Role |
-|---|---|
+| --- | --- |
 | `settings.py` | Central configuration resolution |
 | `backend_client.py` | Streamlit to FastAPI HTTP integration |
 | `borrower_metrics.py` | EMI, DTI, LTV calculations |

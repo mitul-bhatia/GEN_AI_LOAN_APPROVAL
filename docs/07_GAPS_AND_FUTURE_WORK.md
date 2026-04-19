@@ -64,7 +64,7 @@ Remaining gaps are primarily around production hardening, evaluation depth, and 
 ## 4. Risk Summary
 
 | Area | Risk Level | Why |
-|---|---|---|
+| --- | --- | --- |
 | Core correctness | Medium | Deterministic checks are strong, but parser edge cases always evolve |
 | Explainability | Medium-Low | Reports include checks and citations, but no formal citation auditor |
 | Scalability | Medium-High | Local-first architecture and no queueing/rate control |

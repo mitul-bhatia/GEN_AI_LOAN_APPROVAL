@@ -30,7 +30,7 @@ Build a conversational credit assessment assistant that can:
 ## 4. Functional Requirements and Status
 
 | Requirement | Status | Implementation Reference |
-|---|---|---|
+| --- | --- | --- |
 | Conversational borrower intake | Complete | `agent/nodes.py`, `services/profile_parser.py` |
 | Safety/domain guardrails | Complete | `services/guardrail.py` |
 | Form-based parameter seeding | Complete | `api.py`, `app.py` |
@@ -49,7 +49,7 @@ Build a conversational credit assessment assistant that can:
 ## 5. Non-Functional Requirements and Status
 
 | NFR | Status | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Explainability | Partial-Complete | policy checks and citations are included; no formal citation auditor yet |
 | Reliability under missing LLM | Complete | deterministic fallback paths implemented |
 | Configurability | Complete | env-based settings for model/path/ports |

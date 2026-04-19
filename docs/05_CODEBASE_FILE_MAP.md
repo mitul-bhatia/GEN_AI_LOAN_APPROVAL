@@ -31,7 +31,7 @@ creditsense/
 ## 3. Core Entry Files
 
 | File | Line Count | Responsibility |
-|---|---:|---|
+| --- | ---: | --- |
 | `api.py` | 254 | FastAPI backend endpoints and graph invocation |
 | `app.py` | 956 | Streamlit frontend UI and interaction loop |
 | `requirements.txt` | 30 | Python dependency manifest |
@@ -43,7 +43,7 @@ creditsense/
 ## 4. Agent Package
 
 | File | Line Count | Responsibility |
-|---|---:|---|
+| --- | ---: | --- |
 | `agent/graph.py` | 81 | Graph wiring, route conditions, state merge |
 | `agent/nodes.py` | 493 | All six node implementations |
 | `agent/state.py` | 101 | State schema, required fields, initial state |
@@ -53,7 +53,7 @@ creditsense/
 ## 5. Services Package
 
 | File | Line Count | Responsibility |
-|---|---:|---|
+| --- | ---: | --- |
 | `services/settings.py` | 38 | Config defaults and env mapping |
 | `services/backend_client.py` | 63 | Frontend HTTP client for backend APIs |
 | `services/borrower_metrics.py` | 36 | EMI/DTI/LTV computations |
@@ -72,7 +72,7 @@ creditsense/
 ## 6. Scripts
 
 | File | Line Count | Responsibility |
-|---|---:|---|
+| --- | ---: | --- |
 | `scripts/ingest.py` | 217 | Corpus ingestion and indexing into Chroma |
 | `scripts/e2e_scenarios.py` | 139 | Multi-scenario API smoke test |
 | `scripts/run_backend.sh` | 76 | Backend startup helper |
@@ -81,7 +81,7 @@ creditsense/
 ## 7. Assets and Runtime Data
 
 | Path | Purpose |
-|---|---|
+| --- | --- |
 | `assets/fonts/NotoSansDevanagari-Regular.ttf` | Hindi PDF font support |
 | `chroma_store/` | Local persistent vector database files |
 | `../../RAG files` | Default workspace corpus path auto-detected by settings/scripts |

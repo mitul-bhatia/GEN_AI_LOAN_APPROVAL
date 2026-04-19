@@ -12,7 +12,7 @@
 ## 2. Endpoint Summary
 
 | Method | Path | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/api/v1/health` | health and runtime metadata |
 | GET | `/api/v1/agent/state/initial` | fresh initial agent state |
 | POST | `/api/v1/agent/turn` | run one conversational graph turn |
