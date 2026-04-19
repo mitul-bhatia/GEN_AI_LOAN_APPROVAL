@@ -1,0 +1,15 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.DS_Store
+
+# Local vector and model artifacts
+chroma_store/*
+!chroma_store/.gitkeep
+ml_model/*
+!ml_model/.gitkeep
+rag_docs/*
+!rag_docs/.gitkeep

@@ -1,0 +1,990 @@
+\documentclass[12pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% Page geometry
+\geometry{margin=1in}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Loan Approval Prediction}
+\lhead{NST GenAI Capstone}
+\cfoot{\thepage}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Loan Approval Prediction System},
+    pdfauthor={Mitul Bhatia, Hardik, Vaibhav, Sarvjeet},
+}
+
+% Title formatting
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+
+% Code listing style
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Huge\bfseries Loan Approval Prediction System\par}
+    \vspace{0.5cm}
+    {\Large Using Machine Learning (Logistic Regression \& XGBoost)\par}
+    
+    \vspace{1.5cm}
+    
+    {\large\textbf{Intro to GenAI Capstone Project (Milestone 1)}\par}
+    \vspace{0.3cm}
+    {\large Newton School of Technology, Sonipat\par}
+    
+    \vspace{2cm}
+    
+    {\Large\bfseries Team Members\par}
+    \vspace{0.5cm}
+    \begin{tabular}{ll}
+        \textbf{Mitul Bhatia} & Team Lead, ML Development \\
+        \textbf{Hardik} & System Architecture \\
+        \textbf{Vaibhav} & Documentation \\
+        \textbf{Sarvjeet} & Presentation \& Video \\
+    \end{tabular}
+    
+    \vspace{1.5cm}
+    
+    {\large\bfseries Project Links\par}
+    \vspace{0.3cm}
+    \begin{tabular}{ll}
+        \textbf{GitHub:} & \url{https://github.com/mitul-bhatia/GEN_AI_LOAN_APPROVAL} \\
+        \textbf{Live Demo:} & \url{https://genailoanapproval-mitul.streamlit.app/} \\
+    \end{tabular}
+    
+    \vspace{1cm}
+    
+    \fbox{\parbox{0.8\textwidth}{\centering
+        \textbf{Final Accuracy: 92.86\%} | \textbf{ROC-AUC: 98.42\%}
+    }}
+    
+    \vfill
+    
+    {\large February 2026\par}
+\end{titlepage}
+
+% Table of Contents
+\tableofcontents
+\newpage
+
+% Abstract
+\begin{abstract}
+This report presents a comprehensive machine learning approach to predict loan approval decisions. Using a dataset of 50,000 loan applications with 20 features, we develop and evaluate multiple classification models. Our analysis begins with Logistic Regression as a principled baseline, achieving 86.42\% accuracy and 0.944 ROC-AUC. Error analysis revealed that feature interactions (credit score $\times$ DTI) explain 40\% of classification errors, motivating the use of XGBoost. The final XGBoost model achieves \textbf{92.86\% accuracy} and \textbf{0.984 ROC-AUC}, a +7.45\% improvement by capturing non-linear interactions. The model is deployed as a production Streamlit application. Key findings reveal that product type and loan intent are stronger predictors than traditional credit metrics, with Credit Card products showing 33x higher approval odds compared to baseline.
+\end{abstract}
+
+\newpage
+
+% Section 1: Introduction
+\section{Introduction}
+
+\subsection{Problem Statement}
+
+Loan approval is a critical decision in financial institutions, balancing risk management with customer acquisition. Manual assessment is time-consuming, inconsistent, and cannot scale to handle millions of applications. This project develops an automated loan approval prediction system using machine learning.
+
+\subsection{Objectives}
+
+\begin{enumerate}
+    \item Develop accurate classification models to predict loan approval
+    \item Identify key factors influencing approval decisions
+    \item Compare traditional ML algorithms with deep learning approaches
+    \item Deploy a production-ready web application
+\end{enumerate}
+
+\subsection{Scope}
+
+This project implements:
+\begin{itemize}
+    \item Exploratory Data Analysis (EDA) with 6 comprehensive visualizations
+    \item Baseline Model: Logistic Regression with full mathematical foundation (86.42\% accuracy)
+    \item Error Analysis: Diagnosing why the baseline model fails
+    \item Production Model: XGBoost with hyperparameter tuning (92.86\% accuracy)
+    \item Streamlit web application deployed on Streamlit Cloud
+\end{itemize}
+
+\newpage
+
+% Section 2: Dataset
+\section{Dataset Description}
+
+\subsection{Overview}
+
+The Loan Approval Dataset 2025 contains \textbf{50,000 loan applications} with \textbf{20 features}. The dataset is clean with no missing values.
+
+\subsection{Features}
+
+\begin{table}[H]
+\centering
+\caption{Dataset Features}
+\begin{tabular}{lll}
+\toprule
+\textbf{Feature} & \textbf{Type} & \textbf{Description} \\
+\midrule
+customer\_id & String & Unique identifier (dropped) \\
+age & Integer & Applicant age (18-70) \\
+occupation\_status & Categorical & Employed/Self-Employed/Student \\
+years\_employed & Float & Years of employment \\
+annual\_income & Integer & Annual income (15,000-250,000) \\
+credit\_score & Integer & Credit score (300-850) \\
+credit\_history\_years & Float & Length of credit history \\
+savings\_assets & Integer & Savings and assets value \\
+current\_debt & Integer & Current debt amount \\
+defaults\_on\_file & Integer & Number of past defaults \\
+delinquencies\_last\_2yrs & Integer & Recent payment delinquencies \\
+derogatory\_marks & Integer & Negative credit marks \\
+product\_type & Categorical & Credit Card/Personal Loan/Line of Credit \\
+loan\_intent & Categorical & Purpose of loan \\
+loan\_amount & Integer & Requested loan amount \\
+interest\_rate & Float & Interest rate offered \\
+debt\_to\_income\_ratio & Float & DTI ratio \\
+loan\_to\_income\_ratio & Float & LTI ratio \\
+payment\_to\_income\_ratio & Float & PTI ratio \\
+\textbf{loan\_status} & \textbf{Binary} & \textbf{Target: 0=Rejected, 1=Approved} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Target Variable Distribution}
+
+The target variable is reasonably balanced:
+\begin{itemize}
+    \item \textbf{Approved (1)}: 27,523 applications (55.05\%)
+    \item \textbf{Rejected (0)}: 22,477 applications (44.95\%)
+\end{itemize}
+
+This balance means we do not require oversampling techniques like SMOTE.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{target_distribution.png}
+    \caption{Target Variable Distribution}
+    \label{fig:target_dist}
+\end{figure}
+
+\newpage
+
+% Section 3: EDA
+\section{Exploratory Data Analysis}
+
+\subsection{Numerical Features Distribution}
+
+Analysis of numerical features reveals several patterns:
+
+\begin{itemize}
+    \item \textbf{Age}: Ranges from 18-70, with approved applicants skewing slightly older
+    \item \textbf{Credit Score}: Strong separator between approved (higher) and rejected (lower) applications
+    \item \textbf{Annual Income}: Right-skewed distribution; approved applicants have higher median income
+    \item \textbf{Interest Rate}: Higher rates correlate with rejection
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{numerical_distributions.png}
+    \caption{Numerical Features Distribution by Loan Status}
+    \label{fig:num_dist}
+\end{figure}
+
+\subsection{Categorical Features Analysis}
+
+Approval rates vary significantly across categorical features:
+
+\begin{table}[H]
+\centering
+\caption{Approval Rates by Category}
+\begin{tabular}{llc}
+\toprule
+\textbf{Feature} & \textbf{Category} & \textbf{Approval Rate} \\
+\midrule
+\multirow{3}{*}{Occupation Status} & Self-Employed & 57\% \\
+ & Student & 56\% \\
+ & Employed & 54\% \\
+\midrule
+\multirow{3}{*}{Product Type} & Credit Card & 61\% \\
+ & Line of Credit & 53\% \\
+ & Personal Loan & 48\% \\
+\midrule
+\multirow{6}{*}{Loan Intent} & Education & 68\% \\
+ & Personal & 61\% \\
+ & Home Improvement & 54\% \\
+ & Medical & 53\% \\
+ & Business & 44\% \\
+ & Debt Consolidation & 37\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{categorical_analysis.png}
+    \caption{Approval Rate by Categorical Features}
+    \label{fig:cat_analysis}
+\end{figure}
+
+\subsection{Correlation Analysis}
+
+The correlation heatmap reveals:
+
+\begin{enumerate}
+    \item \textbf{Strong positive correlations with approval}: credit\_score (+0.50), age (+0.31), credit\_history\_years (+0.28)
+    \item \textbf{Strong negative correlations with approval}: delinquencies\_last\_2yrs (-0.32), debt\_to\_income\_ratio (-0.32), defaults\_on\_file (-0.26)
+    \item \textbf{Multicollinearity}: loan\_to\_income\_ratio and payment\_to\_income\_ratio are perfectly correlated (1.00)
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{correlation_heatmap.png}
+    \caption{Feature Correlation Heatmap}
+    \label{fig:corr_heatmap}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{target_correlation.png}
+    \caption{Feature Correlation with Target Variable}
+    \label{fig:target_corr}
+\end{figure}
+
+\subsection{Key Features Deep Dive}
+
+Box plots of the most predictive features show clear separation between approved and rejected classes:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{key_features_boxplot.png}
+    \caption{Key Features by Loan Status}
+    \label{fig:key_features}
+\end{figure}
+
+\newpage
+
+% Section 4: Preprocessing
+\section{Data Preprocessing}
+
+\subsection{Feature Selection}
+
+Based on EDA findings, we made the following decisions:
+
+\textbf{Dropped Features:}
+\begin{itemize}
+    \item \texttt{customer\_id}: Unique identifier with no predictive value
+    \item \texttt{current\_debt}: Redundant; captured by \texttt{debt\_to\_income\_ratio}
+\end{itemize}
+
+\textbf{Retained Ratios:}
+We verified that \texttt{debt\_to\_income\_ratio} = \texttt{current\_debt} / \texttt{annual\_income} with 100\% match. Ratios are more meaningful than raw values as they are normalized.
+
+\subsection{Categorical Encoding}
+
+One-hot encoding was applied to categorical features:
+
+\begin{itemize}
+    \item \texttt{occupation\_status}: 3 categories $\rightarrow$ 3 binary features
+    \item \texttt{product\_type}: 3 categories $\rightarrow$ 3 binary features
+    \item \texttt{loan\_intent}: 6 categories $\rightarrow$ 6 binary features
+\end{itemize}
+
+\subsection{Feature Scaling}
+
+StandardScaler was applied to 14 numerical features:
+\[
+z = \frac{x - \mu}{\sigma}
+\]
+
+This ensures all features have mean 0 and standard deviation 1, preventing features with larger scales from dominating.
+
+\subsection{Train-Test Split}
+
+\begin{itemize}
+    \item \textbf{Training set}: 40,000 samples (80\%)
+    \item \textbf{Test set}: 10,000 samples (20\%)
+    \item \textbf{Stratification}: Maintained class balance in both sets
+\end{itemize}
+
+\textbf{Final feature count}: 26 features after preprocessing
+
+\newpage
+
+% Section 5: Logistic Regression
+\section{Model 1: Logistic Regression}
+
+\subsection{Why Logistic Regression?}
+
+We begin with Logistic Regression as our baseline model for several principled reasons:
+
+\begin{enumerate}
+    \item \textbf{Regulatory Compliance}: Banks are required to explain credit decisions (Basel II/III). Logistic Regression provides interpretable coefficients.
+    \item \textbf{Probabilistic Output}: Returns probability of approval, enabling risk-based pricing.
+    \item \textbf{Linearity Test}: If LR performs well, the problem is linearly separable and complex models may be unnecessary.
+    \item \textbf{Strong Correlations}: EDA revealed credit\_score (+0.50) and other features have linear relationships with the target.
+\end{enumerate}
+
+\subsection{Mathematical Foundation}
+
+Logistic Regression models the log-odds (logit) of approval as a linear function:
+
+\begin{equation}
+\log\left(\frac{P(Y=1|X)}{1-P(Y=1|X)}\right) = \beta_0 + \sum_{i=1}^{n} \beta_i X_i
+\end{equation}
+
+The probability is obtained via the sigmoid function:
+
+\begin{equation}
+P(Y=1|X) = \frac{1}{1 + e^{-(\beta_0 + \sum_{i=1}^{n} \beta_i X_i)}}
+\end{equation}
+
+\subsubsection{Loss Function}
+
+We minimize the Binary Cross-Entropy Loss:
+
+\begin{equation}
+\mathcal{L} = -\frac{1}{N}\sum_{i=1}^{N}\left[y_i \log(\hat{p}_i) + (1-y_i)\log(1-\hat{p}_i)\right]
+\end{equation}
+
+This penalizes confident wrong predictions heavily.
+
+\subsubsection{Regularization}
+
+To prevent overfitting with 26 features, we apply regularization:
+
+\textbf{L2 Regularization (Ridge):}
+\begin{equation}
+\mathcal{L}_{L2} = \mathcal{L} + \lambda \sum_{i=1}^{n} \beta_i^2
+\end{equation}
+
+\textbf{L1 Regularization (Lasso):}
+\begin{equation}
+\mathcal{L}_{L1} = \mathcal{L} + \lambda \sum_{i=1}^{n} |\beta_i|
+\end{equation}
+
+L1 can shrink coefficients to exactly zero, performing automatic feature selection.
+
+\subsection{Hyperparameter Tuning}
+
+Grid search with 5-fold cross-validation was performed over:
+\begin{itemize}
+    \item $C \in \{0.001, 0.01, 0.1, 1, 10, 100\}$ (inverse regularization strength)
+    \item Penalty $\in \{L1, L2\}$
+\end{itemize}
+
+\textbf{Best Parameters:}
+\begin{itemize}
+    \item $C = 0.1$
+    \item Penalty = L1 (Lasso)
+    \item Solver = SAGA
+\end{itemize}
+
+The selection of L1 regularization indicates that some features were pushed to zero, simplifying the model.
+
+\subsection{Results}
+
+\begin{table}[H]
+\centering
+\caption{Logistic Regression Performance Metrics}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{Interpretation} \\
+\midrule
+Accuracy & 86.42\% & Overall correct predictions \\
+Precision & 86.91\% & Of predicted approvals, 86.91\% correct \\
+Recall & 88.68\% & Of actual approvals, caught 88.68\% \\
+F1 Score & 87.79\% & Harmonic mean of precision/recall \\
+ROC-AUC & 94.39\% & Excellent discrimination ability \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Classification Report}
+
+\begin{table}[H]
+\centering
+\caption{Detailed Classification Report}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\
+\midrule
+Rejected (0) & 0.86 & 0.84 & 0.85 & 4,495 \\
+Approved (1) & 0.87 & 0.89 & 0.88 & 5,505 \\
+\midrule
+\textbf{Weighted Avg} & \textbf{0.86} & \textbf{0.86} & \textbf{0.86} & \textbf{10,000} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Cross-Validation Stability}
+
+5-fold cross-validation results:
+\begin{itemize}
+    \item F1 Scores: [0.8849, 0.8769, 0.8791, 0.8789, 0.8807]
+    \item Mean F1: 0.8801
+    \item Standard Deviation: 0.0027
+\end{itemize}
+
+The low variance (0.0027) indicates the model is stable and will generalize well to unseen data.
+
+\subsection{Confusion Matrix and ROC Curve}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{lr_evaluation.png}
+    \caption{Logistic Regression: Confusion Matrix and ROC Curve}
+    \label{fig:lr_eval}
+\end{figure}
+
+Confusion Matrix Analysis:
+\begin{itemize}
+    \item \textbf{True Negatives}: 3,760 (correctly rejected)
+    \item \textbf{False Positives}: 735 (incorrectly approved)
+    \item \textbf{False Negatives}: 623 (incorrectly rejected)
+    \item \textbf{True Positives}: 4,882 (correctly approved)
+\end{itemize}
+
+\subsection{Feature Importance Analysis}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{lr_feature_importance.png}
+    \caption{Logistic Regression Coefficients (Top 15 Features)}
+    \label{fig:lr_importance}
+\end{figure}
+
+\subsubsection{Coefficient Interpretation}
+
+For coefficient $\beta_i$, the odds ratio $e^{\beta_i}$ represents how much the odds of approval multiply per unit increase in the feature.
+
+\begin{table}[H]
+\centering
+\caption{Top Features by Odds Ratio}
+\begin{tabular}{lccp{6cm}}
+\toprule
+\textbf{Feature} & \textbf{Coef.} & \textbf{Odds Ratio} & \textbf{Interpretation} \\
+\midrule
+Credit Card & +3.51 & 33.5x & Credit card applicants are 33x more likely to be approved \\
+Defaults on File & -2.35 & 0.095 & Having defaults reduces odds by 90\% \\
+Interest Rate & -1.82 & 0.16 & Higher rates indicate 6x lower approval odds \\
+Debt Consolidation & -1.65 & 0.19 & Debt consolidation loans 5x less likely approved \\
+Education Loan & +1.60 & 4.96 & Education loans 5x more likely approved \\
+Credit Score & +0.79 & 2.20 & 1 std increase $\rightarrow$ 2.2x odds \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Insights}
+
+\begin{enumerate}
+    \item \textbf{Product Type Dominates}: Credit Card products have dramatically higher approval odds than Personal Loans or Lines of Credit.
+    \item \textbf{Loan Intent Matters}: Education loans are favored; debt consolidation is penalized.
+    \item \textbf{Credit History is Critical}: Defaults and delinquencies strongly reduce approval chances.
+    \item \textbf{Linear Model Works}: 86\%+ accuracy suggests the problem is largely linearly separable.
+\end{enumerate}
+
+\subsection{Conclusion for Logistic Regression}
+
+Logistic Regression provides a strong, interpretable baseline:
+\begin{itemize}
+    \item 86.42\% accuracy exceeds the 80\% threshold we set
+    \item 94.39\% ROC-AUC indicates excellent discrimination
+    \item Low CV variance ensures reliability
+    \item Coefficients provide actionable business insights
+\end{itemize}
+
+\textbf{Next Steps}: We proceed to Decision Trees to test if threshold effects and feature interactions can improve upon this baseline.
+
+\newpage
+
+% Section 6: Error Analysis
+\section{Error Analysis: Why 86\%?}
+
+Before jumping to complex models, we conducted a rigorous error analysis to understand why Logistic Regression is stuck at 86\% accuracy.
+
+\subsection{Error Breakdown}
+
+\begin{table}[H]
+\centering
+\caption{Error Distribution}
+\begin{tabular}{lc}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Total Errors & 1,358 / 10,000 (13.58\%) \\
+False Positives & 735 (approved but should reject) \\
+False Negatives & 623 (rejected but should approve) \\
+FP:FN Ratio & 1.18:1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{error_analysis_features.png}
+    \caption{Feature Distribution by Error Type}
+    \label{fig:error_features}
+\end{figure}
+
+\subsection{Key Finding: Model is Confidently Wrong}
+
+\begin{itemize}
+    \item FPs with probability $>$ 0.7: 385 (52.4\% of FPs)
+    \item FNs with probability $<$ 0.3: 266 (42.7\% of FNs)
+    \item Errors near boundary (0.4-0.6): Only 27.6\%
+\end{itemize}
+
+The model isn't just uncertain on edge cases—it's \textbf{systematically misunderstanding} certain patterns.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{error_probability_distribution.png}
+    \caption{Error Probability Distribution}
+    \label{fig:prob_dist}
+\end{figure}
+
+\subsection{Key Finding: Feature Interactions Matter}
+
+\begin{table}[H]
+\centering
+\caption{Correlation with Errors}
+\begin{tabular}{lc}
+\toprule
+\textbf{Feature} & \textbf{Correlation} \\
+\midrule
+credit\_score & -0.035 \\
+debt\_to\_income\_ratio & +0.034 \\
+\textbf{credit\_score $\times$ DTI} & \textbf{+0.166} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The interaction between credit score and DTI predicts errors 5x better than either feature alone!
+
+\textbf{LR assumes additive effects:}
+\[
+P(Y=1) = \sigma(\beta_{cs} \cdot X_{cs} + \beta_{dti} \cdot X_{dti})
+\]
+
+\textbf{Reality has multiplicative effects:}
+\begin{itemize}
+    \item High credit + Low DTI $\rightarrow$ Approve $\checkmark$
+    \item High credit + High DTI $\rightarrow$ Should Reject (but LR approves) $\times$
+    \item Low credit + Low DTI $\rightarrow$ Should Approve (but LR rejects) $\times$
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{error_nonlinear_patterns.png}
+    \caption{Non-linear Patterns in Errors}
+    \label{fig:nonlinear}
+\end{figure}
+
+\subsection{Root Cause Analysis}
+
+\begin{table}[H]
+\centering
+\caption{Root Causes of Errors}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Problem} & \textbf{Evidence} & \textbf{\% of Errors} \\
+\midrule
+Feature Interactions & credit $\times$ DTI correlation = 0.166 & $\sim$40\% \\
+Threshold Effects & Errors cluster at specific credit scores & $\sim$35\% \\
+Irreducible Noise & Inconsistent labeling in data & $\sim$25\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Conclusion}: We need non-linear models (XGBoost) to capture feature interactions.
+
+\newpage
+
+% Section 7: XGBoost
+\section{Model 2: XGBoost}
+
+\subsection{Why XGBoost After Logistic Regression?}
+
+Based on our error analysis, we need a model that can capture:
+
+\begin{table}[H]
+\centering
+\caption{How XGBoost Addresses LR Limitations}
+\begin{tabular}{ll}
+\toprule
+\textbf{LR Limitation} & \textbf{XGBoost Solution} \\
+\midrule
+Additive effects only & Trees capture interactions via splits \\
+Smooth decision boundary & Step functions via tree splits \\
+Single linear classifier & Ensemble of 200 trees \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Mathematical Foundation}
+
+\subsubsection{From Single Tree to Gradient Boosting}
+
+XGBoost builds trees sequentially:
+\[
+\hat{y}_i^{(t)} = \hat{y}_i^{(t-1)} + f_t(x_i)
+\]
+
+Each new tree $f_t$ corrects the errors of previous trees.
+
+\subsubsection{Objective Function}
+
+XGBoost minimizes a regularized objective:
+\begin{equation}
+\mathcal{L}^{(t)} = \sum_{i=1}^{n} L(y_i, \hat{y}_i^{(t-1)} + f_t(x_i)) + \Omega(f_t)
+\end{equation}
+
+Using Taylor expansion (second-order approximation):
+\begin{equation}
+\mathcal{L}^{(t)} \approx \sum_{i=1}^{n} \left[ g_i f_t(x_i) + \frac{1}{2}h_i f_t^2(x_i) \right] + \Omega(f_t)
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $g_i = \frac{\partial L}{\partial \hat{y}^{(t-1)}}$ (gradient)
+    \item $h_i = \frac{\partial^2 L}{\partial (\hat{y}^{(t-1)})^2}$ (hessian)
+\end{itemize}
+
+\subsubsection{Regularization}
+
+\begin{equation}
+\Omega(f_t) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2
+\end{equation}
+
+Where $T$ = number of leaves, $w_j$ = leaf weights.
+
+\subsection{Hyperparameter Tuning}
+
+\begin{table}[H]
+\centering
+\caption{XGBoost Hyperparameters}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Parameter} & \textbf{Tested Values} & \textbf{Best Value} \\
+\midrule
+n\_estimators & 100, 200, 300 & 200 \\
+max\_depth & 3, 5, 7 & 5 \\
+learning\_rate & 0.01, 0.1, 0.3 & 0.1 \\
+subsample & 0.8, 1.0 & 0.8 \\
+colsample\_bytree & 0.8, 1.0 & 0.8 \\
+reg\_lambda & 0, 1, 10 & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Results}
+
+\begin{table}[H]
+\centering
+\caption{Model Comparison: LR vs XGBoost}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{Logistic Regression} & \textbf{XGBoost} & \textbf{Improvement} \\
+\midrule
+Accuracy & 86.42\% & \textbf{92.86\%} & +7.45\% \\
+Precision & 86.91\% & \textbf{92.65\%} & +6.60\% \\
+Recall & 88.68\% & \textbf{94.53\%} & +6.60\% \\
+F1 Score & 87.79\% & \textbf{93.58\%} & +6.60\% \\
+ROC-AUC & 94.39\% & \textbf{98.42\%} & +4.28\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{xgb_evaluation.png}
+    \caption{XGBoost: Confusion Matrix and ROC Curve}
+    \label{fig:xgb_eval}
+\end{figure}
+
+\subsection{Error Analysis: What XGBoost Fixed}
+
+\begin{table}[H]
+\centering
+\caption{Error Resolution}
+\begin{tabular}{lc}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+LR Errors & 1,358 \\
+XGBoost Errors & 714 \\
+Fixed by XGBoost & 886 (LR wrong $\rightarrow$ XGBoost right) \\
+New XGBoost Errors & 242 (LR right $\rightarrow$ XGBoost wrong) \\
+Both Wrong (Irreducible) & 472 \\
+Net Improvement & +644 samples \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Feature Importance}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{xgb_feature_importance.png}
+    \caption{XGBoost Feature Importance (Gain)}
+    \label{fig:xgb_importance}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Top 5 Features by Importance}
+\begin{tabular}{clcp{5cm}}
+\toprule
+\textbf{Rank} & \textbf{Feature} & \textbf{Importance} & \textbf{Reason} \\
+\midrule
+1 & credit\_score & 0.153 & Primary creditworthiness indicator \\
+2 & defaults\_on\_file & 0.118 & Past payment failures \\
+3 & debt\_to\_income\_ratio & 0.096 & Key interaction with credit score \\
+4 & delinquencies\_last\_2yrs & 0.078 & Recent payment behavior \\
+5 & loan\_intent\_Debt Consolidation & 0.055 & High-risk loan purpose \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+% Section 8: Streamlit Application
+\section{Streamlit Web Application}
+
+\subsection{System Architecture}
+
+Figure \ref{fig:architecture} shows the complete end-to-end pipeline from data input to deployed prediction.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{system_architecture.png}
+\caption{System Architecture: End-to-End Pipeline (Designed by Hardik)}
+\label{fig:architecture}
+\end{figure}
+
+The architecture consists of five main components:
+
+\begin{enumerate}
+    \item \textbf{Data Layer}: Raw loan data (50K $\times$ 20 features)
+    \item \textbf{Preprocessing Pipeline}: Feature selection (20 $\rightarrow$ 18), One-Hot Encoding (3 $\rightarrow$ 12), StandardScaler, Train/Test Split (80/20)
+    \item \textbf{Model Training}: Logistic Regression (86.4\%) $\rightarrow$ Error Analysis $\rightarrow$ XGBoost (92.9\%)
+    \item \textbf{Model Artifacts}: Saved \texttt{feature\_names.pkl}, \texttt{scaler.pkl}, \texttt{xgboost.pkl}
+    \item \textbf{Production App}: Streamlit Web App with GitHub CI/CD to Streamlit Cloud
+\end{enumerate}
+
+\subsection{Application Components}
+
+The production application is built with Streamlit and follows a clean, minimal design:
+
+\begin{itemize}
+    \item \textbf{Model Loading}: XGBoost model, scaler, and feature names loaded via \texttt{joblib}
+    \item \textbf{Preprocessing Pipeline}: Identical to training pipeline (scaling + one-hot encoding)
+    \item \textbf{Interactive UI}: Two-column layout with input form and prediction display
+    \item \textbf{Visualization}: Real-time feature importance chart using Plotly
+\end{itemize}
+
+\subsection{User Interface Features}
+
+\begin{enumerate}
+    \item \textbf{Input Panel}: Age, occupation, income, credit score, loan details
+    \item \textbf{Automated Calculations}: DTI, LTI, PTI ratios computed from inputs
+    \item \textbf{Prediction Result}: Approval/Rejection with confidence percentage
+    \item \textbf{Key Metrics Display}: Credit Score status, DTI health, LTI assessment
+    \item \textbf{Feature Importance}: Top 8 factors influencing the prediction
+\end{enumerate}
+
+\subsection{Deployment}
+
+\begin{itemize}
+    \item \textbf{Platform}: Streamlit Cloud
+    \item \textbf{URL}: \url{https://genailoanapproval-mitul.streamlit.app/}
+    \item \textbf{Repository}: Connected to GitHub for CI/CD
+\end{itemize}
+
+\subsection{Technology Stack}
+
+\begin{table}[H]
+\centering
+\caption{Technology Stack Used}
+\begin{tabular}{lll}
+\toprule
+\textbf{Layer} & \textbf{Technology} & \textbf{Purpose} \\
+\midrule
+Language & Python 3.13 & Core development \\
+ML Framework & scikit-learn 1.8 & Preprocessing, Logistic Regression \\
+Boosting & XGBoost 3.2 & Production model \\
+Data Processing & Pandas, NumPy & Data manipulation \\
+Visualization & Plotly, Seaborn, Matplotlib & Charts and graphs \\
+Web Framework & Streamlit 1.54 & User interface \\
+Deployment & Streamlit Cloud & Hosting \\
+Version Control & Git + GitHub & Source control \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+% Section 9: Conclusion
+\section{Summary and Conclusions}
+
+\subsection{Work Completed}
+
+\begin{enumerate}
+    \item \textbf{Data Exploration}: Comprehensive EDA with 6 visualizations
+    \item \textbf{Preprocessing}: Feature selection, encoding, scaling, and train-test split
+    \item \textbf{Logistic Regression}: Complete implementation with hyperparameter tuning (86.42\%)
+    \item \textbf{Error Analysis}: Identified feature interactions as root cause
+    \item \textbf{XGBoost}: Best model achieving 92.86\% accuracy
+    \item \textbf{Streamlit Application}: Deployed to Streamlit Cloud
+\end{enumerate}
+
+\subsection{Key Insights}
+
+\begin{enumerate}
+    \item \textbf{LR Baseline is Strong}: 86\% accuracy proves linear relationships exist
+    \item \textbf{Interactions Matter}: credit\_score $\times$ DTI predicts 40\% of errors
+    \item \textbf{Threshold Effects}: Credit score thresholds around 580, 650
+    \item \textbf{XGBoost Captures Non-linearity}: +7.45\% improvement over LR
+    \item \textbf{$\sim$10\% Irreducible Error}: Data noise limits any model
+\end{enumerate}
+
+\subsection{Final Model Performance}
+
+\begin{table}[H]
+\centering
+\caption{Final Model Comparison}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Model} & \textbf{Accuracy} & \textbf{ROC-AUC} & \textbf{F1 Score} & \textbf{Key Strength} \\
+\midrule
+Logistic Regression & 86.42\% & 94.39\% & 87.79\% & Interpretable \\
+\textbf{XGBoost} & \textbf{92.86\%} & \textbf{98.42\%} & \textbf{93.58\%} & \textbf{Captures interactions} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+% Section 10: Team Contribution
+\section{Team Contribution}
+
+\subsection{Contribution Matrix}
+
+\begin{table}[H]
+\centering
+\caption{Team Contribution Matrix}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Task} & \textbf{Mitul} & \textbf{Hardik} & \textbf{Vaibhav} & \textbf{Sarvjeet} \\
+ & \textit{(Lead)} & \textit{(Architecture)} & \textit{(Documentation)} & \textit{(Presentation)} \\
+\midrule
+Data Collection \& Preprocessing & $\bullet$ & $\circ$ & $\circ$ & \\
+Exploratory Data Analysis & $\bullet$ & $\circ$ & $\circ$ & \\
+Logistic Regression Implementation & $\bullet$ & $\circ$ & & \\
+Error Analysis \& Diagnosis & $\bullet$ & $\circ$ & & \\
+XGBoost Implementation & $\bullet$ & $\circ$ & & \\
+System Architecture Design & $\bullet$ & $\bullet$ & & \\
+Streamlit Web Application & $\bullet$ & $\bullet$ & & \\
+Cloud Deployment & $\bullet$ & $\circ$ & & \\
+Technical Documentation & $\bullet$ & & $\bullet$ & \\
+Report Writing (LaTeX) & $\circ$ & & $\bullet$ & \\
+Presentation Slides & $\circ$ & & $\circ$ & $\bullet$ \\
+Video Recording \& Editing & & & & $\bullet$ \\
+Code Review \& Quality & $\bullet$ & $\circ$ & & \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3cm}
+\textbf{Legend:} $\bullet$ = Primary Contributor, $\circ$ = Supporting Contributor
+\end{table}
+
+\subsection{Individual Contributions}
+
+\begin{description}
+    \item[Mitul Bhatia (Team Lead)] Led the entire ML pipeline development including data preprocessing, feature engineering, model implementation (both Logistic Regression and XGBoost), error analysis, hyperparameter tuning, and Streamlit application development. Coordinated team efforts and ensured code quality.
+    
+    \item[Hardik (System Architecture)] Designed the system architecture diagram, contributed to understanding the data flow pipeline, assisted with Streamlit UI design, and participated in model debugging sessions.
+    
+    \item[Vaibhav (Documentation)] Responsible for comprehensive technical documentation, LaTeX report formatting, ensuring all mathematical notations are correct, and maintaining project README and code comments.
+    
+    \item[Sarvjeet (Presentation \& Video)] Created the presentation slides, recorded and edited the project walkthrough video, and ensured visual consistency across all deliverables.
+\end{description}
+
+\subsection{Code Ownership Declaration}
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{
+\textbf{Declaration:} We hereby affirm that the core logic of this project is our own work and not a direct output of Generative AI. All team members can explain any function within the repository during the Viva Voce examination.
+
+\vspace{0.3cm}
+\textbf{Technical Sub-Features Implemented:}
+\begin{enumerate}
+    \item Custom data preprocessing pipeline with feature engineering
+    \item Error analysis system to diagnose model limitations
+    \item Real-time inference via Streamlit web application
+    \item Interactive feature importance visualization
+\end{enumerate}
+}}
+\end{center}
+
+\newpage
+
+% Section 11: References
+\section{References}
+
+\begin{enumerate}
+    \item Chen, T., \& Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, 785-794.
+    
+    \item Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825-2830.
+    
+    \item Basel Committee on Banking Supervision. (2004). \textit{International Convergence of Capital Measurement and Capital Standards: A Revised Framework}. Bank for International Settlements.
+    
+    \item Hastie, T., Tibshirani, R., \& Friedman, J. (2009). \textit{The Elements of Statistical Learning: Data Mining, Inference, and Prediction} (2nd ed.). Springer.
+    
+    \item Equal Credit Opportunity Act (ECOA), 15 U.S.C. § 1691 et seq. - Fair lending requirements for credit decisions.
+    
+    \item Streamlit Documentation. (2026). Retrieved from \url{https://docs.streamlit.io/}
+    
+    \item XGBoost Documentation. (2026). Retrieved from \url{https://xgboost.readthedocs.io/}
+\end{enumerate}
+
+\subsection{Dataset Source}
+
+\begin{itemize}
+    \item \textbf{Dataset Name:} Loan Approval Dataset 2025
+    \item \textbf{Size:} 50,000 loan applications $\times$ 20 features
+    \item \textbf{Format:} CSV
+    \item \textbf{License:} Educational use permitted
+\end{itemize}
+
+\end{document}
