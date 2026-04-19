@@ -1,0 +1,19 @@
+flowchart TD
+  Start([Turn Start])
+  G[guardrail_node]
+  C[conversation_node]
+  R[rag_retriever_node]
+  P[policy_node]
+  Re[report_node]
+  T[translate_node]
+  End([Turn End])
+
+  Start --> G
+  G -->|is_finance_query = false| End
+  G -->|is_finance_query = true| C
+
+  C -->|profile_complete = false| End
+  C -->|report_requested = false| End
+  C -->|profile_complete and report_requested| R
+
+  R --> P --> Re --> T --> End

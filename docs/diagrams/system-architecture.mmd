@@ -1,0 +1,57 @@
+flowchart TB
+  subgraph Presentation_Layer[Presentation Layer]
+    User["Credit Officer / Analyst"]
+    UI["Streamlit UI\napp.py"]
+    User --> UI
+  end
+
+  subgraph API_Layer[API Layer]
+    API["FastAPI Service\napi.py"]
+    StateInit["GET /api/v1/agent/state/initial"]
+    Turn["POST /api/v1/agent/turn"]
+    Seed["POST /api/v1/agent/seed-parameters"]
+    Ingest["POST /api/v1/ingest"]
+    UI <--> API
+    API --> StateInit
+    API --> Turn
+    API --> Seed
+    API --> Ingest
+  end
+
+  subgraph Orchestration_Layer[Orchestration Layer]
+    Graph["LangGraph StateGraph\nagent/graph.py"]
+    Guard["guardrail_node"]
+    Conv["conversation_node"]
+    Rag["rag_retriever_node"]
+    Pol["policy_node"]
+    Rep["report_node"]
+    Trn["translate_node"]
+    End1["Turn Ends"]
+
+    Graph --> Guard --> Conv
+    Conv -->|profile complete and report requested| Rag --> Pol --> Rep --> Trn
+    Conv -->|guidance mode| End1
+  end
+
+  subgraph Intelligence_Data_Layer[Intelligence and Data Layer]
+    Ret["ChromaRetriever\nservices/retriever.py"]
+    Chroma[("ChromaDB Persistent Store")]
+    Emb["SentenceTransformer\nall-MiniLM-L6-v2"]
+    Policy["Policy Engine\nservices/policy_engine.py"]
+    ML["ML Adapter and Heuristic\nservices/ml_adapter.py"]
+    LLM["Groq LLM Pool\nservices/groq_client.py"]
+    Hindi["Hindi Translation\nservices/translator.py"]
+    Pdf["PDF Exporter\nservices/pdf_exporter.py"]
+  end
+
+  API --> Graph
+  Rag --> Ret --> Emb
+  Ret --> Chroma
+  Pol --> Policy
+  Pol --> ML
+  Rep --> LLM
+  Trn --> Hindi --> Pdf
+  API -->|ingestion pipeline| Chroma
+
+  classDef layer fill:#f8fbff,stroke:#2b4c7e,stroke-width:1px,color:#1a2f4f;
+  class User,UI,API,StateInit,Turn,Seed,Ingest,Graph,Guard,Conv,Rag,Pol,Rep,Trn,Ret,Chroma,Emb,Policy,ML,LLM,Hindi,Pdf,End1 layer

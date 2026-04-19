@@ -1,0 +1,29 @@
+flowchart LR
+  subgraph Local[Local Development Runtime]
+    Dev["Developer Machine"]
+    FE["Streamlit app\nport 8502"]
+    BE["FastAPI api\nport 8010"]
+    RAG["RAG files corpus"]
+    CH[("./chroma_store")]
+
+    Dev --> FE
+    FE <--> BE
+    BE --> CH
+    BE --> RAG
+  end
+
+  subgraph Cloud[Render Deployment Baseline]
+    Web["creditsense-api service"]
+    Proc["Procfile\nuvicorn start"]
+    Yaml["render.yaml\nenv contract"]
+    Runtime["runtime.txt\npython-3.11.0"]
+    Disk[("Persistent Chroma path")]
+
+    Web --> Proc
+    Web --> Yaml
+    Web --> Runtime
+    Web --> Disk
+  end
+
+  FE -. BACKEND_API_BASE_URL .-> Web
+  Web --> LLM["Groq API keys"]

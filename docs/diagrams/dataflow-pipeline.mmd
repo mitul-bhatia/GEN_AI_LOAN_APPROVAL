@@ -1,0 +1,44 @@
+sequenceDiagram
+  autonumber
+  actor Officer as Credit Officer
+  participant UI as Streamlit UI (app.py)
+  participant API as FastAPI (api.py)
+  participant Graph as LangGraph Runtime
+  participant Conv as conversation_node
+  participant Rag as rag_retriever_node
+  participant Pol as policy_node
+  participant Rep as report_node
+  participant Trn as translate_node
+  participant Ret as ChromaRetriever
+  participant Vec as ChromaDB
+
+  Officer->>UI: Enter borrower profile fields
+  UI->>API: POST /api/v1/agent/seed-parameters
+  API->>API: Normalize inputs and merge state
+  API-->>UI: Return missing fields or profile complete
+
+  Officer->>UI: Ask question or request report
+  UI->>API: POST /api/v1/agent/turn
+  API->>Graph: run_turn(state)
+
+  Graph->>Conv: Extract updates and compute ratios
+  alt profile complete and report requested
+    Conv->>Rag: Route to retrieval path
+    Rag->>Ret: Build contextual query
+    Ret->>Vec: Similarity search (top_k)
+    Vec-->>Ret: Chunks, metadata, distances
+    Ret-->>Rag: rag_chunks and citations
+    Rag->>Pol: Send profile, ratios, citations
+    Pol->>Pol: Apply policy checks and ML score
+    Pol-->>Rep: Decision, score, risk flags
+    Rep->>Rep: Build English report
+    Rep-->>Trn: report_en
+    Trn->>Trn: Translate to Hindi
+    Trn-->>Graph: report_hi
+  else intake or guidance mode
+    Conv-->>Graph: Assistant guidance reply
+  end
+
+  Graph-->>API: Updated merged state
+  API-->>UI: assistant_reply, decision, report flags
+  UI->>UI: Render decision card and PDF downloads
