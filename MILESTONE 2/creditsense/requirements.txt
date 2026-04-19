@@ -1,6 +1,11 @@
-# CPU-only torch — no NVIDIA/CUDA on Render
+# CPU-only torch — no NVIDIA/CUDA packages on Render
 --extra-index-url https://download.pytorch.org/whl/cpu
+
 torch==2.2.2+cpu
+
+# Pin versions that are tested & compatible with torch 2.2.2
+sentence-transformers==2.7.0
+transformers==4.44.2
 
 # Core
 streamlit>=1.32.0
@@ -8,9 +13,8 @@ fastapi>=0.111.0
 uvicorn>=0.30.0
 langgraph>=0.1.0
 
-# Vector DB + Embeddings (same as local)
+# Vector DB
 chromadb>=0.4.0
-sentence-transformers
 
 # Document parsing
 pdfplumber
