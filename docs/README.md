@@ -18,7 +18,7 @@ Use these docs as the single source for:
 ## Document Index
 
 | File | What It Covers |
-|---|---|
+| --- | --- |
 | `01_PROJECT_OVERVIEW.md` | Problem, solution, implemented scope, and milestone summary |
 | `02_ARCHITECTURE.md` | End-to-end architecture, data flow, state flow, and routing |
 | `03_AGENT_NODES_AND_SERVICES.md` | All LangGraph nodes and all service modules |
@@ -37,7 +37,7 @@ Use these docs as the single source for:
 ## Milestone 2 At A Glance
 
 | Topic | Current Implementation |
-|---|---|
+| --- | --- |
 | Frontend | Streamlit app (`app.py`) |
 | Backend | FastAPI (`api.py`) |
 | Agent Orchestration | LangGraph StateGraph with 6 nodes |

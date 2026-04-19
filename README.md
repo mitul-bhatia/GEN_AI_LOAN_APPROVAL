@@ -1,11 +1,8 @@
 # 🏦 CreditSense v2: AI-Powered Loan Approval Agent
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Status-Milestone_2_Deployed-success?style=for-the-badge&logoColor=white" />
-  <img src="https://img.shields.io/badge/Stack-Streamlit_|_FastAPI_|_LangGraph-blue?style=for-the-badge&logoColor=white" />
-  <img src="https://img.shields.io/badge/Retrieval-ChromaDB_|_ONNX_MiniLM-orange?style=for-the-badge&logoColor=white" />
-</div>
-<br>
+![Status: Milestone 2 Deployed](https://img.shields.io/badge/Status-Milestone_2_Deployed-success?style=for-the-badge&logoColor=white)
+![Stack: Streamlit | FastAPI | LangGraph](https://img.shields.io/badge/Stack-Streamlit_|_FastAPI_|_LangGraph-blue?style=for-the-badge&logoColor=white)
+![Retrieval: ChromaDB | ONNX MiniLM](https://img.shields.io/badge/Retrieval-ChromaDB_|_ONNX_MiniLM-orange?style=for-the-badge&logoColor=white)
 
 **CreditSense v2** is a professional, bilingual (English/Hindi) AI credit assessment platform. It combines a deterministic policy engine, RAG-backed regulatory knowledge (RBI & NBFC guidelines), and LangGraph agent orchestration to provide explainable loan decisions.
 
@@ -17,58 +14,21 @@ Understanding how CreditSense works is critical for auditability. We utilize a *
 
 ![CreditSense System Architecture](docs/arhctecture_diagram.png)
 
-> **Why ONNX over PyTorch?** 
+> **Why ONNX over PyTorch?**
 > To support lightning-fast ultra-lightweight deployments on Streamlit Community Cloud and Render Free Tier, we fully modernized the vector stack. `SentenceTransformers` and `PyTorch` (2GB+) were replaced by Chroma's native **`ONNXMiniLM_L6_V2`** engine (50MB), yielding the exact same inference outputs at 5% of the memory footprint.
 
 ---
 
-<br>
+## 👥 Core Team & Project Contributions
 
-<div align="center">
-  <h2>👥 Core Team & Project Contributions</h2>
-  <img src="https://img.shields.io/badge/Milestone-Complete-blue?style=flat-square" />
-</div>
+![Milestone: Complete](https://img.shields.io/badge/Milestone-Complete-blue?style=flat-square)
 
-<table align="center" width="100%">
-  <tr>
-    <td align="center" width="25%">
-      <b>👨‍💻 Mitul</b><br>
-      <i>Project Lead &<br>Full-Stack Development</i>
-    </td>
-    <td width="75%">
-      Spearheaded the overall software architecture. Engineered the FastAPI backend, Streamlit frontend, LangGraph orchestration, local RAG integration, and deployment pipelines.
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <b>📚 Vaibhav</b><br>
-      <i>Technical Documentation &<br>Report Strategy</i>
-    </td>
-    <td>
-      Structured and developed the comprehensive project documentation, system architecture records, READMEs, and the formal technical submission report.
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <b>🖥️ Sarvjeet</b><br>
-      <i>Media &<br>Presentation Lead</i>
-    </td>
-    <td>
-      Designed and delivered the final project presentation (PowerPoint), mapped the technical flow into digestible visual slides, and produced the final demo walkthrough video.
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <b>💡 Hardik</b><br>
-      <i>Product Ideation &<br>Strategy</i>
-    </td>
-    <td>
-      Led the initial concept framing, conceptualized the integration of RBI guidelines, structured the business logic requirements (e.g., Debt-to-Income, LTV ratios), and defined the target user-experience.
-    </td>
-  </tr>
-</table>
-
-<br>
+| Member | Role | Contribution |
+| --- | --- | --- |
+| 👨‍💻 Mitul | Project Lead and Full-Stack Development | Spearheaded the overall software architecture and engineered the FastAPI backend, Streamlit frontend, LangGraph orchestration, local RAG integration, and deployment pipelines. |
+| 📚 Vaibhav | Technical Documentation and Report Strategy | Structured and developed the comprehensive project documentation, architecture records, READMEs, and formal technical submission report. |
+| 🖥️ Sarvjeet | Media and Presentation Lead | Designed and delivered the final project presentation, mapped technical flow into digestible visual slides, and produced the final demo walkthrough video. |
+| 💡 Hardik | Product Ideation and Strategy | Led initial concept framing, conceptualized RBI guideline integration, structured business logic requirements (for example DTI and LTV), and defined target user experience. |
 
 ---
 
@@ -106,6 +66,7 @@ bash scripts/run_streamlit.sh
 ```
 
 **Local Endpoints**:
+
 - 🎨 Frontend: `http://localhost:8502`
 - ⚙️ Backend API: `http://localhost:8010`
 
@@ -114,7 +75,7 @@ bash scripts/run_streamlit.sh
 ## 📂 Project Navigation
 
 | Directory | Purpose |
-|---|---|
+| --- | --- |
 | 🌲 [`MILESTONE_2/`](MILESTONE_2/) | **Primary Codebase:** The entire Streamlit + FastAPI + LangGraph architecture. |
 | 📚 [`docs/`](docs/) | **Documentation Map:** Deep dives into API, deployment, design specs, and LaTeX reports. |
 | 🗃️ [`RAG files/`](RAG%20files/) | **Corpus:** The raw regulatory documents feeding the intelligence layer. |

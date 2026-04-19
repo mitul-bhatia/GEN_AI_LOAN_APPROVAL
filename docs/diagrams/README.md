@@ -13,13 +13,17 @@ This folder contains the architecture diagrams for the Milestone 2 report and vi
 
 1. Install Mermaid CLI:
 
+```bash
 npm install -g @mermaid-js/mermaid-cli
+```
 
-2. Run exports from repository root:
+1. Run exports from repository root:
 
+```bash
 mmdc -i docs/diagrams/system-architecture.mmd -o docs/diagrams/exports/system-architecture.png
 mmdc -i docs/diagrams/dataflow-pipeline.mmd -o docs/diagrams/exports/dataflow-pipeline.png
 mmdc -i docs/diagrams/langgraph-control-flow.mmd -o docs/diagrams/exports/langgraph-control-flow.png
 mmdc -i docs/diagrams/deployment-view.mmd -o docs/diagrams/exports/deployment-view.png
+```
 
 The generated PNG files can be directly uploaded to forms asking for architecture drawings/images under size limits.
