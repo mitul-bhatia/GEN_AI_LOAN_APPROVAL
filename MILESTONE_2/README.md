@@ -16,6 +16,8 @@ This milestone contains the active CreditSense v2 implementation under:
 
 ## What Is In Scope
 
+![CreditSense System Architecture](../docs/arhctecture_diagram.png)
+
 Milestone 2 currently implements:
 
 1. Streamlit frontend (`creditsense/app.py`)

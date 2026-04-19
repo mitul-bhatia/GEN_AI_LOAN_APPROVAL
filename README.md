@@ -15,64 +15,21 @@
 
 Understanding how CreditSense works is critical for auditability. We utilize a **hybrid deterministic-AI pipeline** that ensures strict policy enforcement with natural language reasoning.
 
-```mermaid
-graph TD
-    classDef frontend fill:#1E293B,stroke:#38BDF8,stroke-width:2px,color:#fff
-    classDef backend fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#fff
-    classDef agent fill:#701A75,stroke:#D946EF,stroke-width:2px,color:#fff
-    classDef data fill:#3F3F46,stroke:#A1A1AA,stroke-width:2px,color:#fff
-
-    User((👤 Borrower / User))
-
-    subgraph "Presentation Layer (Streamlit Cloud)"
-        UI[💻 Streamlit Intake UI & Chat]:::frontend
-        Report[📄 Bilingual PDF Export]:::frontend
-    end
-
-    subgraph "API Layer (Render / FastAPI)"
-        API[⚡ FastAPI Endpoints]:::backend
-    end
-
-    subgraph "Intelligence Orchestrator (LangGraph)"
-        Guard[🛡️ Guardrails]:::agent
-        RAGNode[📚 Retriever Node]:::agent
-        PolicyNode[⚖️ Policy Decision Node]:::agent
-        ReportNode[📝 Report Generation Node]:::agent
-    end
-
-    subgraph "Data & Vector Store"
-        DB[(🗄️ ChromaDB <br> ONNX Embeddings)]:::data
-        Docs[📄 RBI/NBFC Docs]:::data
-        LLM{🧠 Groq LLM <br> llama-3.3-70b}:::data
-    end
-
-    User -->|Profile & Chat| UI
-    UI <-->|JSON State| API
-    API -->|Turn Trigger| Guard
-    Guard -->|Valid Request| RAGNode
-    RAGNode -->|Semantic Query| DB
-    Docs -.->|Ingested via ONNX| DB
-    DB -.->|Citations| RAGNode
-    RAGNode --> PolicyNode
-    PolicyNode -->|Risk Flags| ReportNode
-    ReportNode <-->|Summarization / Translation| LLM
-    ReportNode --> API
-    API --> UI
-    UI -->|Downloads| Report
-```
+![CreditSense System Architecture](docs/arhctecture_diagram.png)
 
 > **Why ONNX over PyTorch?** 
 > To support lightning-fast ultra-lightweight deployments on Streamlit Community Cloud and Render Free Tier, we fully modernized the vector stack. `SentenceTransformers` and `PyTorch` (2GB+) were replaced by Chroma's native **`ONNXMiniLM_L6_V2`** engine (50MB), yielding the exact same inference outputs at 5% of the memory footprint.
 
 ---
 
-## 📑 The Professional Visual Report (LaTeX)
+## 📑 The Professional Visual Report (Agentic AI Whitepaper)
 
-For deep academic or architectural review, compile our highly structured **LaTeX Visual Technical Report**. It includes technical depth, data-flow diagrams, and viva-voce talking points.
+For deep academic or architectural review, we have included a highly structured **Agentic AI Whitepaper**. It fundamentally details how the architectural problem of LLM hallucination is solved through our LangGraph Multi-Agent implementation.
 
+- **Markdown Source (Easily exportable to PDF):** [`docs/CreditSense_M2_Professional_Report.md`](docs/CreditSense_M2_Professional_Report.md)
 - **LaTeX Source:** [`docs/CreditSense_M2_Professional_Report.tex`](docs/CreditSense_M2_Professional_Report.tex)
-- **Compiled PDF:** [`docs/CreditSense_M2_Professional_Report.pdf`](docs/CreditSense_M2_Professional_Report.pdf) 
-*(Note: To generate the newest PDF, compile the `.tex` file locally or on Overleaf since automated GitHub compilation is skipped for file size).*
+
+*(Note: Open the `.md` file in VS Code and click "Open Preview" -> Right-click -> "Export to PDF" to instantly generate your highly-formatted official report!)*
 
 > 💡 **Tip:** Use these `docs/` files directly as your script and visual aid to build your professional PowerPoint (PPT) presentation!
 

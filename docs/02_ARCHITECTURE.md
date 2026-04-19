@@ -4,35 +4,7 @@
 
 ## 1. System Architecture (As Built)
 
-```text
-+-----------------------+        HTTP         +-----------------------+
-| Streamlit Frontend    |  ---------------->  | FastAPI Backend       |
-| app.py                |                     | api.py                |
-| - Sidebar form        |                     | - /health             |
-| - Chat interface      |                     | - /agent/state/initial|
-| - Report panel        |                     | - /agent/turn         |
-| - PDF download        |                     | - /agent/seed-parameters
-+-----------------------+                     | - /ingest             |
-                                              +-----------+-----------+
-                                                          |
-                                                          v
-                                              +-----------------------+
-                                              | LangGraph Orchestrator|
-                                              | agent/graph.py        |
-                                              | guardrail -> conv ->  |
-                                              | rag -> policy ->      |
-                                              | report -> translate   |
-                                              +-----------+-----------+
-                                                          |
-                                  +-----------------------+----------------------+
-                                  |                                              |
-                                  v                                              v
-                      +------------------------+                     +------------------------+
-                      | ChromaDB Persistent    |                     | Groq LLM APIs          |
-                      | services/retriever.py  |                     | guardrail/extract/     |
-                      | scripts/ingest.py      |                     | report/translate nodes |
-                      +------------------------+                     +------------------------+
-```
+![CreditSense System Architecture](arhctecture_diagram.png)
 
 ## 2. Layer Responsibilities
 

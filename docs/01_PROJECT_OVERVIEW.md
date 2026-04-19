@@ -13,6 +13,8 @@ Milestone 2 codebase used for this documentation:
 
 - `MILESTONE_2/creditsense/`
 
+![System Architecture](arhctecture_diagram.png)
+
 ## 2. Problem Statement
 
 Loan decisioning teams face repeated operational pain points:
