@@ -1,13 +1,12 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 
-\usepackage[a4paper,margin=1in]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
 \usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{longtable}
 \usepackage{tabularx}
 \usepackage{array}
 \usepackage{hyperref}
@@ -15,469 +14,188 @@
 \usepackage{fancyhdr}
 \usepackage{float}
 \usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{ifthen}
-\usepackage{verbatim}
 \usepackage{tikz}
-\usepackage{listings}
-\usepackage{caption}
-\usepackage{subcaption}
+\usepackage{titlesec}
+\usepackage{enumitem}
 
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, fit, backgrounds, decorations.pathreplacing}
+
+% Color Theme Definition
+\definecolor{primary}{RGB}{15, 68, 113}
+\definecolor{secondary}{RGB}{43, 114, 175}
+\definecolor{accent}{RGB}{208, 83, 30}
+\definecolor{bglight}{RGB}{247, 250, 252}
 
 \hypersetup{
-  colorlinks=true,
-  linkcolor=blue!45!black,
-  urlcolor=blue!45!black,
-  pdftitle={CreditSense v2 Milestone 2 - Visual Professional Report},
-  pdfauthor={CreditSense Team}
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=secondary,
+    pdftitle={CreditSense v2: AI-Assisted Credit Risk Assessment Platform},
+    pdfauthor={Team CreditSense}
 }
 
-\setstretch{1.12}
-\setlength{\parskip}{0.45em}
+% Formatting
+\setstretch{1.15}
+\setlength{\parskip}{0.6em}
 \setlength{\parindent}{0em}
-\setlength{\emergencystretch}{2em}
+\titleformat{\section}{\Large\bfseries\color{primary}}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\color{secondary}}{\thesubsection}{1em}{}
 
+% Header and Footer
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{CreditSense v2 - Milestone 2}
-\rhead{Visual Technical Report}
+\lhead{\textcolor{gray}{\small CreditSense v2 Project Report}}
+\rhead{\textcolor{gray}{\small Final Submission}}
 \cfoot{\thepage}
-\setlength{\headheight}{14pt}
-
-\definecolor{primary}{RGB}{21,72,124}
-\definecolor{softblue}{RGB}{236,244,255}
-\definecolor{softgreen}{RGB}{236,248,241}
-\definecolor{softorange}{RGB}{255,245,232}
-\definecolor{codebg}{RGB}{248,249,251}
-\definecolor{codekw}{RGB}{0,79,143}
-\definecolor{codestr}{RGB}{154,76,0}
-\definecolor{codecom}{RGB}{74,120,74}
-
-\lstdefinestyle{pythonstyle}{
-  language=Python,
-  basicstyle=\ttfamily\small,
-  keywordstyle=\bfseries\color{codekw},
-  commentstyle=\itshape\color{codecom},
-  stringstyle=\color{codestr},
-  showstringspaces=false,
-  breaklines=true,
-  frame=single,
-  rulecolor=\color{black!20},
-  backgroundcolor=\color{codebg},
-  tabsize=2,
-  captionpos=b
-}
-
-\newcommand{\checkbox}{\(\square\)}
 
 \begin{document}
 
+% ------------------------- TITLE PAGE ------------------------- %
 \begin{titlepage}
-  \centering
-  {\Huge \textbf{CreditSense v2}}\\[0.6em]
-  {\Large Milestone 2 - Professional Visual Report}\\[1.2em]
-
-  {\large AI-Assisted Credit Risk Assessment with RAG, LangGraph, Policy Engine, and Bilingual Reporting}\\[2.2em]
-
-  \colorbox{softblue}{
-    \parbox{0.93\textwidth}{
-      \textbf{Purpose of this report:} This is a viva-ready technical document that explains architecture, code flow,
-      design decisions, challenges, and proof of ownership in a highly visual and readable format.
-    }
-  }
-
-  \vspace{1.6em}
-
-  \begin{tabular}{p{0.34\textwidth}p{0.58\textwidth}}
-    \textbf{Repository:} & GEN\_AI\_LOAN\_APPROVAL \\
-    \textbf{Milestone Focus:} & MILESTONE_2 / creditsense \\
-    \textbf{Stack:} & Streamlit, FastAPI, LangGraph, ChromaDB, ONNX MiniLM (via Chroma) \\
-    \textbf{Report Version:} & As-built from code scan on 2026-04-19 \\
-  \end{tabular}
-
-  \vfill
-
-  {\small This PDF is intentionally designed to be understandable for viva panel members who may not read source code line-by-line.}
+    \centering
+    \vspace*{2cm}
+    
+    {\Huge \bfseries \color{primary} CreditSense v2}\\[1cm]
+    {\LARGE \bfseries AI-Assisted Credit Risk Assessment Platform}\\[1.5cm]
+    
+    {\Large Milestone 2 Project Report}\\[2cm]
+    
+    {\Large \bfseries Project Team}\\[0.5cm]
+    \begin{tabular}{ll}
+        \Large \textbf{Mitul} & \large Project Lead \& Full-Stack Development \\
+        \Large \textbf{Vaibhav} & \large Lead Technical Writer \& Report Generation \\
+        \Large \textbf{Sarvjeet} & \large Media \& Presentation Lead (PPT \& Video) \\
+        \Large \textbf{Hardik} & \large Product Ideation \& Conceptual Strategy \\
+    \end{tabular}
+    
+    \vfill
+    
+    {\Large \textit{Submitted in partial fulfillment for project requirements}}\\[1cm]
+    {\large \today}
+    
 \end{titlepage}
 
 \tableofcontents
 \newpage
 
-\section{Project Snapshot}
+% ------------------------- ABSTRACT ------------------------- %
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+The traditional loan approval process is hindered by manual document verification, subjective risk evaluation, and bottlenecks in interpreting complex financial jargon. This report presents \textbf{CreditSense v2}, an intelligent, semi-autonomous credit risk assessment platform. 
 
-\subsection{What We Built}
-CreditSense v2 is a conversational credit assessment system where a user enters borrower details, interacts with an AI assistant,
-and receives a structured decision report supported by regulatory citations from an indexed RAG corpus.
+Built using a hybrid architecture consisting of Streamlit, FastAPI, and a LangGraph-orchestrated Large Language Model (LLM), the platform conducts interactive borrower intake, queries regulatory documents (RBI and NBFC guidelines) via Retrieval-Augmented Generation (RAG), and calculates an explicit risk score utilizing a deterministic policy engine. The result is a bilingual (English and Hindi), highly explainable financial report that empowers loan officers to make rapid and compliant credit decisions.
 
-\subsection{Delivered Milestone 2 Scope}
-\begin{tabularx}{\textwidth}{>{\bfseries}p{0.28\textwidth}X}
-\toprule
-Area & Implemented Capability \\
-\midrule
-Frontend & Streamlit UI for intake form, chat, decisions, and downloadable reports \\
-Backend & FastAPI endpoints for health, state initialization, turn processing, seeded parameters, and ingestion \\
-Orchestration & LangGraph node graph with deterministic routing \\
-Retrieval & Chroma persistent store + ONNX MiniLM embeddings (via Chroma) \\
-Decisioning & Deterministic policy thresholds + ML adapter score + risk flags \\
-Reporting & English report generation + Hindi translation + PDF export \\
-Deployment Assets & Procfile, render.yaml, runtime.txt (Python 3.11.0) \\
-\bottomrule
-\end{tabularx}
+% ------------------------- 1. INTRODUCTION ------------------- %
+\section{Introduction}
 
-\section{Viva Voce Preparation}
+In modern financing, decision latency directly impacts customer acquisition and operational overhead. However, completely offloading credit decisions to AI models introduces severe non-compliance risks, as LLMs frequently hallucinate rules or invent financial metrics. 
 
-\subsection{System Architecture (The How)}
-The architecture is intentionally layered so each responsibility is clear and auditable:
-\begin{enumerate}
-  \item Presentation Layer: Streamlit UI captures borrower profile and user questions.
-  \item API Layer: FastAPI validates payloads, normalizes inputs, and invokes graph turns.
-  \item Orchestration Layer: LangGraph runs deterministic node transitions.
-  \item Intelligence Layer: Retriever + policy + ML + LLM compose final analytical output.
-  \item Output Layer: Bilingual report rendering and PDF export.
-\end{enumerate}
+CreditSense solves this by implementing a **deterministic constraint envelope** over the AI. The LLM is used strictly for conversational data extraction, summarization, and translation, while the actual decision (Approve, Conditional, or Escalate) is grounded in math and fixed policy matrices.
 
-\subsection{Project Architecture Diagram}
-\textbf{Instruction alignment:} architecture is provided as a built-in visual figure in this report and also as Mermaid source for external export/upload.
+\subsection{Project Scope and Deliverables}
+The core deliverables of the CreditSense v2 system include:
+\begin{itemize}
+    \item A dynamic conversational user interface built on Streamlit.
+    \item A LangGraph orchestrator that forces the AI into a strict sequence of operations (Guardrail $\rightarrow$ Conversation $\rightarrow$ Retrieve $\rightarrow$ Score $\rightarrow$ Translate).
+    \item A local vector database (ChromaDB) leveraging lightweight ONNX embeddings to retrieve financial regulations.
+    \item Formatted, compliant, and bilingual downloadable PDF reports.
+\end{itemize}
+
+% ------------------------- 2. TEAM ROLES --------------------- %
+\section{Team Contributions and Roles}
+The development and delivery of this robust platform was achieved through a structured division of labor, ensuring specific expertise was applied at every layer of the product lifecycle:
+
+\begin{figure}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabularx}{\textwidth}{>{\hsize=0.25\hsize\bfseries\color{primary}\large}X >{\hsize=0.75\hsize}X}
+    \toprule
+    \rowcolor{bglight} \multicolumn{2}{c}{\textbf{Project CreditSense - Core Responsibilities}} \\
+    \midrule
+    Mitul & \textbf{Project Lead \& Full-Stack Development} \newline Spearheaded the overall software architecture. Engineered the FastAPI backend, Streamlit frontend, LangGraph orchestration, local RAG integration, and deployment pipelines. \\
+    Vaibhav & \textbf{Technical Documentation \& Report Strategy} \newline Structured and developed the comprehensive project documentation, system architecture records, READMEs, and the formal technical submission report. \\
+    Sarvjeet & \textbf{Media \& Presentation Lead} \newline Designed and delivered the final project presentation (PowerPoint), mapped the technical flow into digestible visual slides, and produced the final demo walkthrough video. \\
+    Hardik & \textbf{Product Ideation \& Strategy} \newline Led the initial concept framing, conceptualized the integration of RBI guidelines, structured the business logic requirements (e.g., Debt-to-Income, LTV ratios), and defined the target user-experience. \\
+    \bottomrule
+    \end{tabularx}
+\end{figure}
+
+% -------------------- 3. SYSTEM ARCHITECTURE ------------------ %
+\section{System Architecture and Design}
+
+CreditSense utilizes a modern multi-tier microservice architecture to ensure speed, auditability, and scalability. 
+
+\subsection{Visual Component Diagram}
+
+Below is the definitive data-flow mapping of the CreditSense platform, demonstrating the interaction between the User, API, Orchestrator, and Vector DB.
 
 \begin{figure}[H]
 \centering
-\resizebox{\textwidth}{!}{%
+\resizebox{0.95\textwidth}{!}{%
 \begin{tikzpicture}[
-  node distance=1.8cm and 2.2cm,
-  >=Latex,
-  box/.style={draw,rounded corners,thick,align=center,minimum height=1.1cm,text width=3.3cm,font=\small},
-  widebox/.style={draw,rounded corners,thick,align=center,minimum height=1.1cm,text width=4.6cm,font=\small},
-  store/.style={draw,rounded corners,thick,align=center,minimum height=1.0cm,text width=3.8cm,font=\small},
-  arrow/.style={->,thick}
+    >=Latex,
+    box/.style={draw=primary, fill=bglight, rounded corners, thick, align=center, minimum height=1.4cm, text width=3.8cm, font=\small},
+    db/.style={draw=accent, fill=accent!10, cylinder, shape border rotate=90, aspect=0.25, thick, align=center, minimum height=1.5cm, text width=3cm, font=\small},
+    agent/.style={draw=secondary, fill=secondary!10, rounded corners, thick, align=center, minimum height=1.4cm, text width=3.8cm, font=\small},
+    arrow/.style={->, thick, color=black!70}
 ]
 
-\node[box,fill=softblue] (ui) {Streamlit UI\\\texttt{app.py}};
-\node[box,fill=softgreen,right=of ui] (api) {FastAPI Backend\\\texttt{api.py}};
-\node[widebox,fill=softorange,right=of api] (graph) {LangGraph Orchestrator\\guardrail $\rightarrow$ conversation $\rightarrow$ rag\\$\rightarrow$ policy $\rightarrow$ report $\rightarrow$ translate};
+% Nodes
+\node[box] (ui) {\textbf{Presentation Layer}\\Streamlit App \\ (User Chat \& Intake)};
+\node[box, right=2cm of ui] (api) {\textbf{API Gateway}\\FastAPI \\ (State Management)};
+\node[agent, right=2cm of api] (graph) {\textbf{LangGraph Engine}\\Node Executors \\ (Guard, Policy, RAG)};
 
-\node[store,fill=softgreen,below=1.6cm of api] (vector) {ChromaDB + Embeddings\\\texttt{ONNXMiniLM\_L6\_V2}};
-\node[store,fill=softblue,below=1.6cm of graph] (llm) {Groq LLM Services\\chat/report/translation};
-\node[store,fill=gray!12,below=1.6cm of ui] (corpus) {RBI and NBFC Corpus\\\texttt{RAG files/}};
+\node[db, below=2cm of api] (chroma) {\textbf{ChromaDB}\\ONNX Embeddings \\ (Regulatory Corpus)};
+\node[box, fill=gray!10, draw=gray, right=2cm of chroma] (llm) {\textbf{Groq LLM}\\Llama-3.3-70b \\ (Summarization/Chat)};
+\node[box, fill=green!10, draw=green!60!black, left=2cm of chroma] (pdf) {\textbf{PDF Exporter}\\(English \& Hindi)};
 
-\draw[arrow] (ui) -- node[above,font=\scriptsize]{/agent/state and /agent/turn} (api);
-\draw[arrow] (api) -- node[above,font=\scriptsize]{\texttt{run\_turn(state)}} (graph);
-\draw[arrow] (graph) -- node[left,font=\scriptsize]{retrieve} (vector);
-\draw[arrow] (vector) -- node[right,font=\scriptsize]{chunks + citations} (graph);
-\draw[arrow] (graph) -- node[right,font=\scriptsize]{LLM prompts} (llm);
-\draw[arrow] (corpus) -- (vector);
-\draw[arrow] (api) -- ++(0,-0.8) -| node[pos=0.30,right,font=\scriptsize]{/ingest} (vector);
-\end{tikzpicture}
+% Edges
+\draw[arrow, <->] (ui) -- node[above] {\small JSON payload} (api);
+\draw[arrow, <->] (api) -- node[above] {\small Graph Execution} (graph);
+\draw[arrow, <->] (graph) |- node[right, pos=0.2] {\small Similarity Query} (chroma);
+\draw[arrow, <->] (graph) -- node[right] {\small Prompting} (llm);
+\draw[arrow] (api) |- node[left, pos=0.2] {\small File Download} (pdf);
+
+\end{tikzpicture}%
 }
-\caption{CreditSense v2 component architecture (rendered directly in LaTeX)}
+\caption{High-Level Application Architecture for CreditSense v2}
+\label{fig:arch}
 \end{figure}
 
-\subsection{Turn Lifecycle Diagram (Input to Output Pipeline)}
-\begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  >=Latex,
-  stagebox/.style={draw,rounded corners,thick,align=center,text width=2.5cm,minimum height=1.0cm,font=\scriptsize,fill=white},
-  arrow/.style={->,thick}
-]
-\node[stagebox,fill=softblue] (s1) at (0,0) {1. User enters profile and query};
-\node[stagebox,fill=softgreen] (s2) at (3.2,0) {2. API normalizes and merges state};
-\node[stagebox,fill=softorange] (s3) at (6.4,0) {3. Guardrail + Conversation};
-\node[stagebox,fill=softgreen] (s4) at (9.6,0) {4. Retrieval and Policy scoring};
-\node[stagebox,fill=softblue] (s5) at (12.8,0) {5. Report + Translation + PDF};
+\subsection{Architectural Advancements: Migrating to ONNX}
+A critical requirement for this milestone was ensuring the platform could deploy on lightweight free-tier environments (e.g., Streamlit Community Cloud and Render). 
 
-\draw[arrow] (s1) -- (s2);
-\draw[arrow] (s2) -- (s3);
-\draw[arrow] (s3) -- (s4);
-\draw[arrow] (s4) -- (s5);
-\end{tikzpicture}
-}
-\caption{End-to-end data flow from user input to final downloadable output}
-\end{figure}
+Initially, the RAG pipeline utilized the standard \texttt{sentence\_transformers} library, which forced a massive (2GB+) PyTorch dependency. This resulted in system crashes during deployment due to memory exhaust. \\
+\textbf{The Solution:} We aggressively optimized our storage pipeline by swapping to ChromaDB's native \textbf{ONNX Runtime} (\texttt{ONNXMiniLM\_L6\_V2}). This achieved identical 384-dimensional semantic embeddings while shrinking the dependency footprint from 2.2GB to under 50MB, achieving perfect stability.
 
-\subsection{LangGraph Control Flow Diagram}
-\begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  node distance=1.2cm and 2.0cm,
-  >=Latex,
-  proc/.style={draw,rounded corners,thick,align=center,minimum width=3.1cm,minimum height=0.9cm,font=\small,fill=softblue},
-  dec/.style={draw,diamond,aspect=2,thick,align=center,inner sep=1.5pt,font=\scriptsize,fill=softorange},
-  arrow/.style={->,thick}
-]
-\node[proc] (start) {Turn Start};
-\node[proc,below=of start] (guard) {guardrail\_node};
-\node[dec,below=of guard] (finance) {Finance query?};
-\node[proc,below left=1.2cm and 2.2cm of finance] (endblock) {End Turn};
-\node[proc,below right=1.2cm and 2.2cm of finance] (conv) {conversation\_node};
-\node[dec,below=of conv] (ready) {Profile complete\\and report requested?};
-\node[proc,below right=1.2cm and 2.2cm of ready] (rag) {rag\_retriever\_node};
-\node[proc,below=of rag] (policy) {policy\_node};
-\node[proc,below=of policy] (report) {report\_node};
-\node[proc,below=of report] (translate) {translate\_node};
+% ------------------------- 4. METHODOLOGY -------------------- %
+\section{Implementation \& Methodology}
 
-\draw[arrow] (start) -- (guard);
-\draw[arrow] (guard) -- (finance);
-\draw[arrow] (finance) -- node[above left,font=\scriptsize]{No} (endblock);
-\draw[arrow] (finance) -- node[above right,font=\scriptsize]{Yes} (conv);
-\draw[arrow] (conv) -- (ready);
-\draw[arrow] (ready) -- node[above left,font=\scriptsize]{No} (endblock);
-\draw[arrow] (ready) -- node[above right,font=\scriptsize]{Yes} (rag);
-\draw[arrow] (rag) -- (policy);
-\draw[arrow] (policy) -- (report);
-\draw[arrow] (report) -- (translate);
-\draw[arrow] (translate.west) |- (endblock.south);
-\end{tikzpicture}
-}
-\caption{Deterministic control logic implemented in \texttt{agent/graph.py}}
-\end{figure}
-
-\subsection{Architecture Diagram Upload (for Viva Portals)}
-If your form asks for \textit{Project Architecture Diagram} image upload:
-\begin{enumerate}
-  \item Use Mermaid source: \url{docs/diagrams/system-architecture.mmd}
-  \item Export PNG via Mermaid CLI
-  \item Upload \url{docs/diagrams/exports/system-architecture.png}
+\subsection{LangGraph Node Determinism}
+Large Language Models left unchecked are prone to making autonomous, non-compliant decisions. Creating a \texttt{StateGraph} prevents an LLM from leaping directly to a generated report before calculations occur. The orchestrated flow is:
+\begin{enumerate}[label=\textbf{Node \arabic*:}]
+    \item \textbf{Guardrail:} Validates the conversation block is strictly finance-related.
+    \item \textbf{Conversation:} Forces the LLM to extract 15 specific JSON parameters from the user before continuing.
+    \item \textbf{RAG Retriever:} Contextualizes the profile by hunting for relevant rules in the RBI corpus.
+    \item \textbf{Policy Engine:} Triggers math calculations (Debt-to-Income, Net Loan-to-Value) yielding an integer Score out of 100.
+    \item \textbf{Report Generation:} Transcribes the math constraints into natural language.
+    \item \textbf{Translate:} Converts the English response into Hindi using LLM prompting.
 \end{enumerate}
 
-\section{Code Understanding Guide (Read This Before Viva)}
+\subsection{Bilingual PDF Export}
+Financial inclusivity requires accessible language. The system implements the \texttt{fpdf2} library paired with custom Unicode-compliant fonts (Noto Devanagari) to output highly formatted, downloadable PDF records of the complete transaction and regulatory citations.
 
-\subsection{How to Navigate the Codebase Fast}
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries}p{0.34\textwidth}X}
-\toprule
-File / Module & Why It Matters \\
-\midrule
-api.py & API contract and entry point for all runtime actions \\
-agent/graph.py & Actual node graph and routing conditions \\
-agent/nodes.py & Business logic inside each graph node \\
-services/policy\_engine.py & Deterministic decision scoring and risk flags \\
-services/ml\_adapter.py & ML model loading + fallback heuristic scoring \\
-services/retriever.py & Query building and Chroma retrieval \\
-services/report\_generator.py & English report composition with fallback \\
-services/translator.py & Hindi translation behavior \\
-\bottomrule
-\end{tabularx}
-\normalsize
+% ------------------------- 5. CONCLUSION --------------------- %
+\section{Conclusion \& Future Scope}
+CreditSense v2 successfully proves that modern Generative AI can be safely integrated into the highly-regulated fintech sector by combining flexible language chat with rigid, deterministic policy graphs. 
 
-\subsection{Code Snippet 1: Graph Routing Logic}
-\begin{lstlisting}[style=pythonstyle,caption={Conditional routing in graph orchestration},label={lst:graph}]
-def _after_conversation(state: AgentState) -> str:
-    return (
-        "rag_retriever"
-        if state.get("profile_complete", False)
-        and state.get("report_requested", False)
-        else END
-    )
+Through the collaborative efforts of the entire project team, the platform transitioned from ideation to a fully functional, cloud-deployed product yielding actionable bilingual credit reports.
 
-graph.add_conditional_edges(
-    "conversation",
-    _after_conversation,
-    {
-        "rag_retriever": "rag_retriever",
-        END: END,
-    },
-)
-\end{lstlisting}
-
-Why this matters:
+\textbf{Future work includes:}
 \begin{itemize}
-  \item Prevents report generation on incomplete borrower profile.
-  \item Makes decision path deterministic and explainable to reviewers.
+    \item Upgrading the local ChromaDB SQLite implementation to a clustered vector database (e.g., Pinecone or Weaviate).
+    \item Implementing formal OAuth2 authentication mechanisms.
+    \item Expanding the ML risk classification adapter with real-world historic default datasets.
 \end{itemize}
-
-\subsection{Code Snippet 2: API Seed Parameter Normalization}
-\begin{lstlisting}[style=pythonstyle,caption={Strong typing and normalization before scoring},label={lst:seed}]
-def _normalize_seed_parameters(parameters: dict[str, Any]) -> dict[str, Any]:
-    normalized: dict[str, Any] = {}
-    for field in REQUIRED_FIELDS:
-        if field not in parameters:
-            continue
-        value = parameters.get(field)
-        if value is None:
-            continue
-        if isinstance(value, str):
-            value = value.strip()
-            if not value:
-                continue
-        if field in INT_FIELDS:
-            normalized[field] = int(float(value))
-            continue
-        if field in FLOAT_FIELDS:
-            normalized[field] = float(value)
-            continue
-        normalized[field] = str(value)
-    return normalized
-\end{lstlisting}
-
-Why this matters:
-\begin{itemize}
-  \item Prevents malformed user input from corrupting downstream policy and ML logic.
-  \item Ensures consistent numeric operations for DTI, EMI, and LTV calculations.
-\end{itemize}
-
-\subsection{Code Snippet 3: Deterministic Policy Scoring}
-\begin{lstlisting}[style=pythonstyle,caption={Transparent score deductions based on check status},label={lst:policy}]
-score = 100.0
-for check in checks:
-    status = check["status"]
-    if status == "FAIL":
-        score -= 18
-        risk_flags.append(f"{check['metric']} failed")
-    elif status == "WATCH":
-        score -= 10
-        risk_flags.append(f"{check['metric']} needs review")
-
-if score >= 80:
-    decision = "APPROVE"
-elif score >= 60:
-    decision = "CONDITIONAL"
-else:
-    decision = "ESCALATE"
-\end{lstlisting}
-
-Decision formula used in viva explanation:
-\[
-S = \max\left(0,\min\left(100,100-18F-10W\right)\right)
-\]
-where $F$ is number of \texttt{FAIL} checks and $W$ is number of \texttt{WATCH} checks.
-
-\subsection{Code Snippet 4: Retrieval Query Composition}
-\begin{lstlisting}[style=pythonstyle,caption={Profile-aware retrieval query for regulatory grounding},label={lst:rag}]
-def build_query_from_profile(profile, ratios, conversation_context="") -> str:
-    return " ".join([
-        f"loan purpose {profile.get('loan_purpose', '')}",
-        f"loan amount {profile.get('loan_amount_requested', 0)}",
-        f"credit score {profile.get('credit_score', 0)}",
-        f"post loan dti {ratios.get('post_loan_dti', 'na')}",
-        f"collateral {profile.get('collateral_type', 'none')}",
-        f"borrower conversation context {conversation_context[:400]}",
-        "RBI NBFC underwriting fair practices",
-    ])
-\end{lstlisting}
-
-Why this matters:
-\begin{itemize}
-  \item Retrieval is not generic; it is conditioned by borrower profile and financial ratios.
-  \item The response can reference relevant regulatory context instead of unsupported text.
-\end{itemize}
-
-\section{Challenges Faced}
-
-\begin{tabularx}{\textwidth}{>{\bfseries}p{0.23\textwidth}X X}
-\toprule
-Challenge & Impact Risk & Resolution Implemented \\
-\midrule
-Incomplete borrower intake & Wrong or premature decisions & Introduced missing-field tracking and conditional routing before report path. \\
-LLM downtime or unstable responses & Broken UX and inconsistent outputs & Implemented deterministic fallback for chat guidance, report generation, and translation. \\
-State field loss during graph execution & Conversation corruption & Added explicit full-state merge after graph invocation. \\
-Port conflicts in local runs & Startup friction during demo & Startup scripts now clear stale listeners and enforce known defaults. \\
-Hindi PDF rendering gaps & Unreadable export artifacts & Configurable Devanagari font path with fallback messaging in exporter. \\
-\bottomrule
-\end{tabularx}
-
-\section{Tool Deep-Dive}
-
-\begin{longtable}{p{0.20\textwidth}p{0.20\textwidth}p{0.52\textwidth}}
-\toprule
-\textbf{Library} & \textbf{Role} & \textbf{Deep Project Understanding} \\
-\midrule
-Streamlit & Frontend runtime & Used for high-speed form + chat UX with session state continuity and integrated report rendering/download controls. \\
-FastAPI + Pydantic & API and contract layer & Strong schema validation reduces malformed payloads and keeps state transitions predictable. \\
-LangGraph & Workflow orchestration & Provides deterministic graph control so every report path is auditable and viva-explainable. \\
-ChromaDB & Vector retrieval store & Persistent local retrieval is used for regulatory chunk lookup and citation generation. \\
-ONNX MiniLM via Chroma & Embedding generation & ONNXMiniLM\_L6\_V2 is used in ingestion and query retrieval without a separate sentence-transformers dependency. \\
-scikit-learn + joblib & ML scoring adapter & Loads trained model when available, otherwise falls back to deterministic heuristic scoring. \\
-FPDF2 & PDF exporter & Converts final report text into portable output; supports multilingual path with custom font registration. \\
-python-dotenv & Configuration bootstrap & Ensures env vars are loaded before settings are consumed by services. \\
-httpx + Groq integration & LLM access layer & Handles model calls while enabling key rotation and graceful fallback behavior. \\
-\bottomrule
-\end{longtable}
-
-\section{Design Reasoning \& Justification}
-
-\subsection{Why this specific architecture}
-\begin{itemize}
-  \item Regulated credit decisions require explainability; deterministic policy + graph routing was mandatory.
-  \item User trust requires readable narrative; LLM is used for explanations, not sole decision authority.
-  \item Milestone constraints favored rapid deployment and maintainability; Streamlit + FastAPI gave fastest reliable path.
-\end{itemize}
-
-\subsection{Why this model and retrieval stack}
-\begin{itemize}
-  \item ONNX MiniLM via Chroma chosen for practical retrieval quality under CPU-focused runtime constraints.
-  \item Chroma chosen for local persistence and simple operational footprint.
-  \item Groq-backed large model chosen for report language quality and Hindi translation quality.
-\end{itemize}
-
-\subsection{Why hybrid deterministic + ML + LLM}
-A single-method system is brittle:
-\begin{itemize}
-  \item Pure deterministic: strong control, weak narrative intelligence.
-  \item Pure LLM: strong language, weak auditability.
-  \item Hybrid approach: preserves compliance explainability while keeping conversation/report quality high.
-\end{itemize}
-
-\section{Learnings / Key Takeaways}
-\begin{enumerate}
-  \item Architecture clarity matters more than model size in viva evaluations.
-  \item Deterministic fallbacks are essential for production-like reliability.
-  \item Good retrieval requires query engineering, not only vector DB setup.
-  \item Clear state contracts simplify debugging in conversational AI systems.
-  \item Visual documentation dramatically improves reviewer comprehension.
-\end{enumerate}
-
-\section{Code Ownership \& Integrity Declaration}
-By checking these items, we certify viva readiness:
-\begin{itemize}
-  \item \checkbox\ \textbf{Code:} I can answer specific questions about any part of my own code.
-  \item \checkbox\ \textbf{Ownership:} I can provide clear proof that I/we performed the work.
-\end{itemize}
-
-Recommended viva proof bundle:
-\begin{itemize}
-  \item Git history and commit timeline.
-  \item Live walkthrough of endpoint call path and graph execution.
-  \item Demonstration of report generation from fresh seeded borrower profile.
-\end{itemize}
-
-\section{Rapid Viva Q\&A Drill}
-\textbf{Q1: Explain data flow from input to output in 30 seconds.}\\
-A: User enters profile in Streamlit, API normalizes and merges state, LangGraph runs guardrail and conversation. If profile is complete and report requested, retrieval fetches regulatory evidence, policy computes decision score, report and translation nodes generate bilingual outputs, and PDF export completes delivery.
-
-\textbf{Q2: Why is your decisioning defensible?}\\
-A: Decision score is deterministic with explicit deductions per failed/watch checks, and each decision band is transparent (APPROVE, CONDITIONAL, ESCALATE).
-
-\textbf{Q3: What happens when LLM API fails?}\\
-A: The system remains functional using deterministic fallback for chat, report generation, and translation.
-
-\textbf{Q4: How do you prove regulatory grounding?}\\
-A: Retriever pulls citation-ready chunks from indexed RBI/NBFC corpus conditioned by borrower profile and conversation context.
-
-\textbf{Q5: If you had one week more, what would you improve first?}\\
-A: Add authentication, observability traces, and external persistent vector storage for production hardening.
-
-\appendix
-
-\section{Appendix A: Exact Local Run Commands}
-\begin{verbatim}
-cd MILESTONE_2/creditsense
-pip install -r requirements.txt
-python3 scripts/ingest.py --source-dir "../../RAG files"
-bash scripts/run_backend.sh
-# second terminal
-bash scripts/run_streamlit.sh
-\end{verbatim}
-
-\section{Appendix B: Mermaid Diagram Export Commands}
-\begin{lstlisting}[style=pythonstyle]
-npm install -g @mermaid-js/mermaid-cli
-mmdc -i docs/diagrams/system-architecture.mmd -o docs/diagrams/exports/system-architecture.png
-mmdc -i docs/diagrams/dataflow-pipeline.mmd -o docs/diagrams/exports/dataflow-pipeline.png
-mmdc -i docs/diagrams/langgraph-control-flow.mmd -o docs/diagrams/exports/langgraph-control-flow.png
-mmdc -i docs/diagrams/deployment-view.mmd -o docs/diagrams/exports/deployment-view.png
-\end{lstlisting}
 
 \end{document}
