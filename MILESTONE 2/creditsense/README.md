@@ -1,88 +1,89 @@
 # CreditSense v2
 
-Clean rebuild of the CreditSense conversational credit-assessment agent using:
+Streamlit + FastAPI + LangGraph + Chroma implementation for conversational credit assessment.
 
-- FastAPI backend API
-- Streamlit UI (frontend-only caller)
-- LangGraph orchestration
-- Chroma local RAG store
-- Groq LLM APIs (with key rotation)
+> Refreshed from current code scan on 2026-04-19.
+
+## Stack
+
+- Frontend: Streamlit (`app.py`)
+- Backend: FastAPI (`api.py`)
+- Orchestration: LangGraph
+- Retrieval: ChromaDB + sentence-transformers
+- LLM provider: Groq API (key rotation supported)
 
 ## Quick Start
 
-1. Create and activate a virtual environment.
 1. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-1. Configure environment variables:
+2. Configure environment:
 
 ```bash
 cp .env.example .env
 ```
 
-1. Set `RAG_DOCS_PATH` to your corpus directory. In this workspace, default is `../../RAG files`.
-
-1. Build Chroma index:
+3. Ingest corpus:
 
 ```bash
-python scripts/ingest.py --source-dir "../../RAG files"
+python3 scripts/ingest.py --source-dir "../../RAG files"
 ```
 
-1. Run backend API:
-
-```bash
-uvicorn api:app --host 0.0.0.0 --port 8010
-```
-
-1. Run Streamlit frontend:
-
-```bash
-streamlit run app.py
-```
-
-## Easy Run Scripts (Recommended)
-
-Run backend and frontend in separate terminals:
+4. Start backend:
 
 ```bash
 bash scripts/run_backend.sh
 ```
 
+5. Start Streamlit in another terminal:
+
 ```bash
 bash scripts/run_streamlit.sh
 ```
 
-If `8501` is busy, `run_streamlit.sh` automatically picks the next free port (`8502`-`8505`).
+## Default Runtime
 
-Optional env overrides:
+- Backend URL: `http://localhost:8010`
+- Streamlit URL: `http://localhost:8502`
 
-- `BACKEND_PORT` (default `8010`)
-- `STREAMLIT_PORT` (default `8501`)
-- `BACKEND_API_BASE_URL` (frontend target)
-- `PYTHON_BIN` (if you want a different Python executable)
+## Script Notes
 
-## Architecture Note
+- `run_backend.sh` defaults to `BACKEND_PORT=8010`
+- `run_streamlit.sh` defaults to `STREAMLIT_PORT=8502`
+- Both scripts source `.env` / `.env.example` if present
+- Backend script auto-sets `RAG_DOCS_PATH` to `../../RAG files` when available
 
-- FastAPI (`api.py`) contains the backend orchestration endpoints and is the deployable server on Render.
-- Streamlit (`app.py`) is strictly the frontend layer that calls backend endpoints.
-- Frontend uses `BACKEND_API_BASE_URL` (default: `http://localhost:8010`).
+## Environment Variables
 
-## Render Start Command
+From `.env.example`:
 
-Use this start command for backend service:
+- `GROQ_KEY_1`, `GROQ_KEY_2`, `GROQ_KEY_3`
+- `CHROMA_PATH`
+- `COLLECTION_NAME`
+- `RAG_DOCS_PATH`
+- `RAG_TOP_K`
+- `DEFAULT_ANNUAL_INTEREST_RATE`
+- `ML_MODEL_PATH`
+- `HINDI_FONT_PATH`
 
-```bash
-uvicorn api:app --host 0.0.0.0 --port $PORT
-```
+## Deployment Files
 
-## Reusing Milestone 1 Model
+- `Procfile`: `web: uvicorn api:app --host 0.0.0.0 --port $PORT`
+- `render.yaml`: Render service config
+- `runtime.txt`: Python runtime pin (`python-3.11.0`)
 
-The app attempts to load `ml_model/model.pkl` first. If not found, it falls back to
-`../../MILESTONE 1/models/logistic_regression.pkl` when available.
+## Model Fallback
+
+ML adapter load order:
+
+1. `./ml_model/model.pkl`
+2. `../../MILESTONE 1/models/logistic_regression.pkl`
 
 ## Hindi PDF Font
 
-Place `NotoSansDevanagari-Regular.ttf` in `assets/fonts/` for proper Hindi PDF rendering.
+Hindi PDF rendering uses:
+
+- `assets/fonts/NotoSansDevanagari-Regular.ttf`
