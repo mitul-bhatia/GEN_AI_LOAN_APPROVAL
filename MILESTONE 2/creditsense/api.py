@@ -114,6 +114,12 @@ def _seed_summary_text(parameters: dict[str, Any]) -> str:
     return "Form parameters submitted: " + ", ".join(ordered)
 
 
+@app.get("/ping")
+def ping() -> dict[str, str]:
+    """Lightweight endpoint for keep-alive cron jobs."""
+    return {"status": "alive"}
+
+
 @app.get("/api/v1/health")
 def health() -> dict[str, Any]:
     return {
