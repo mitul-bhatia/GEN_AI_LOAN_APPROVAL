@@ -58,6 +58,11 @@ bash scripts/run_streamlit.sh
 - Backend URL: `http://localhost:8010`
 - Streamlit URL: `http://localhost:8502`
 
+## Production Deployment
+
+- Streamlit App (Frontend): https://genailoanapproval-fdwemcnw96p8fgwpen6xcd.streamlit.app/
+- Backend Health Endpoint: https://gen-ai-loan-approval.onrender.com/api/v1/health
+
 ## Script Notes
 
 - `run_backend.sh` defaults to `BACKEND_PORT=8010`
