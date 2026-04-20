@@ -70,6 +70,13 @@ bash scripts/run_streamlit.sh
 - 🎨 Frontend: `http://localhost:8502`
 - ⚙️ Backend API: `http://localhost:8010`
 
+## 🌐 Live Deployment
+
+Use the following public deployment links for direct access:
+
+- 🎨 Streamlit App: https://genailoanapproval-fdwemcnw96p8fgwpen6xcd.streamlit.app/
+- ⚙️ Backend Health API: https://gen-ai-loan-approval.onrender.com/api/v1/health
+
 ---
 
 ## 📂 Project Navigation
